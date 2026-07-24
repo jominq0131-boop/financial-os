@@ -1,20 +1,29 @@
 import { create } from 'zustand';
 import { Asset, AssetCategory } from '@/types/asset';
 
+interface TargetRatios {
+  TIER_1_SAFETY: number;
+  TIER_2_GROWTH: number;
+  TIER_3_MISSION: number;
+}
+
 interface AssetStore {
   assets: Asset[];
   isPrivate: boolean;
+  targetRatios: TargetRatios;
   
   // Actions
   togglePrivacy: () => void;
   addAsset: (asset: Omit<Asset, 'id' | 'updatedAt'>) => void;
   deleteAsset: (id: string) => void;
   updateAsset: (id: string, updated: Partial<Asset>) => void;
+  setTargetRatio: (tier: keyof TargetRatios, ratio: number) => void;
   
   // Computed
   getTotalNetWorth: () => number;
   getAssetsByCategory: (category: AssetCategory) => Asset[];
   getMonthlyDividend: () => number;
+  getTierAllocation: () => { tier: keyof TargetRatios; currentAmount: number; currentRatio: number; targetRatio: number }[];
 }
 
 const INITIAL_ASSETS: Asset[] = [
@@ -73,6 +82,11 @@ const INITIAL_ASSETS: Asset[] = [
 export const useAssetStore = create<AssetStore>((set, get) => ({
   assets: INITIAL_ASSETS,
   isPrivate: false,
+  targetRatios: {
+    TIER_1_SAFETY: 25,
+    TIER_2_GROWTH: 60,
+    TIER_3_MISSION: 15,
+  },
 
   togglePrivacy: () => set((state) => ({ isPrivate: !state.isPrivate })),
 
@@ -97,6 +111,15 @@ export const useAssetStore = create<AssetStore>((set, get) => ({
     }));
   },
 
+  setTargetRatio: (tier, ratio) => {
+    set((state) => ({
+      targetRatios: {
+        ...state.targetRatios,
+        [tier]: Math.max(0, Math.min(100, ratio)),
+      },
+    }));
+  },
+
   getTotalNetWorth: () => {
     return get().assets.reduce((sum, a) => sum + a.amount, 0);
   },
@@ -106,8 +129,28 @@ export const useAssetStore = create<AssetStore>((set, get) => ({
   },
 
   getMonthlyDividend: () => {
-    // 총 자산 대비 4% 룰에 근거한 예상 월 자가배당금 연산
     const total = get().getTotalNetWorth();
     return Math.floor((total * 0.04) / 12);
+  },
+
+  getTierAllocation: () => {
+    const total = get().getTotalNetWorth();
+    const assets = get().assets;
+    const targetRatios = get().targetRatios;
+
+    const tiers: (keyof TargetRatios)[] = ['TIER_1_SAFETY', 'TIER_2_GROWTH', 'TIER_3_MISSION'];
+
+    return tiers.map((tier) => {
+      const currentAmount = assets
+        .filter((a) => a.tier === tier)
+        .reduce((sum, a) => sum + a.amount, 0);
+      const currentRatio = total > 0 ? Number(((currentAmount / total) * 100).toFixed(1)) : 0;
+      return {
+        tier,
+        currentAmount,
+        currentRatio,
+        targetRatio: targetRatios[tier],
+      };
+    });
   },
 }));
