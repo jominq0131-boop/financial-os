@@ -9,10 +9,11 @@
 - [x] **Issue #1**: Next.js 프로젝트 생성 (TypeScript, Tailwind, App Router, ESLint, Turbopack)
 - [x] **Issue #2**: Dashboard UI - Apple Health 스타일 미니멀 카드 4개 제작
 - [x] **Issue #3**: Asset Model & Card - 자산 항목(현금, 주식, 부동산) 등록/마스킹 및 뷰 컴포넌트
-- [ ] **Issue #4**: Financial Runway & Surplus Engine - 월 수입/지출 및 생존 가능 월수(Runway) 연산 모듈
+- [x] **Issue #4**: Financial Runway & Surplus Engine - 월 수입/지출 및 소득 중단 시 생존 가능 기간 연산 모듈
+- [ ] **Issue #5**: 3-Tier Capital Allocation Manager - 안전망(Tier 1), 성장(Tier 2), 미션(Tier 3) 버킷 배분 슬라이더
 
 ---
 
-## 📋 Next Tasks (Issue #4 진행 예정)
-- [ ] 수입/지출 현금흐름 타입 및 Zustand 스토어 (`useCashflowStore.ts`) 연동
-- [ ] 소득 중단 시 현재 유동 자산과 월 고정 지출 기반 Financial Runway 계산기 카드 제작
+## 📋 Next Tasks (Issue #5 진행 예정)
+- [ ] 3-Tier 버킷 모델(Safety / Growth / Mission) 인터페이스 및 자산 배분 비율 연산
+- [ ] 버킷 목표 비율 조율 슬라이더 및 리밸런싱 알림 컴포넌트 제작

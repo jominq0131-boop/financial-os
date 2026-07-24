@@ -12,7 +12,7 @@
 ---
 
 ### 🟡 Phase 2: Runway Engine & Cashflow Pipeline
-- [ ] **Issue #4**: Financial Runway & Surplus Engine - 월 수입/지출 및 소득 중단 시 생존 가능 기간 연산 모듈
+- [x] **Issue #4**: Financial Runway & Surplus Engine - 월 수입/지출 및 소득 중단 시 생존 가능 기간 연산 모듈
 - [ ] **Issue #5**: 3-Tier Capital Allocation Manager - 안전망(Tier 1), 성장(Tier 2), 미션(Tier 3) 버킷 배분 슬라이더
 
 ---

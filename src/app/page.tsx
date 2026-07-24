@@ -3,6 +3,7 @@
 import React from 'react';
 import { useAssetStore } from '@/store/useAssetStore';
 import AssetSection from '@/components/dashboard/AssetSection';
+import RunwaySection from '@/components/dashboard/RunwaySection';
 import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
 
 export default function Home() {
@@ -125,6 +126,9 @@ export default function Home() {
 
         {/* Asset Breakdown Section (Issue #3) */}
         <AssetSection />
+
+        {/* Runway & Cashflow Engine Section (Issue #4) */}
+        <RunwaySection />
 
         {/* Status Footer */}
         <footer className="pt-6 border-t border-zinc-800/60 flex items-center justify-between text-xs text-zinc-400">
