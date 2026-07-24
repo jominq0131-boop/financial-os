@@ -19,7 +19,7 @@
 
 ### 🔵 Phase 3: Life Financial Timeline & Simulation
 - [x] **Issue #6**: Life Event Milestone System - 주택, 은퇴 등 생애 이벤트 노드 관리 및 타임라인 모듈
-- [ ] **Issue #7**: Timeline Asset Forecast Chart - 50년 자산 추이 시각화 그래프 (Recharts)
+- [x] **Issue #7**: Timeline Asset Forecast Chart - 50년 자산 추이 시각화 그래프 (Recharts)
 - [ ] **Issue #8**: Stress Test Simulator - 물가상승률, 시장 하락장(Market Crash) 시나리오 조율기
 
 ---

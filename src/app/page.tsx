@@ -6,6 +6,7 @@ import AssetSection from '@/components/dashboard/AssetSection';
 import RunwaySection from '@/components/dashboard/RunwaySection';
 import BucketSection from '@/components/dashboard/BucketSection';
 import LifeEventSection from '@/components/dashboard/LifeEventSection';
+import ForecastChart from '@/components/dashboard/ForecastChart';
 import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
 
 export default function Home() {
@@ -137,6 +138,9 @@ export default function Home() {
 
         {/* Life Financial Timeline Section (Issue #6) */}
         <LifeEventSection />
+
+        {/* 50 Year Timeline Asset Forecast Chart (Issue #7) */}
+        <ForecastChart />
 
         {/* Status Footer */}
         <footer className="pt-6 border-t border-zinc-800/60 flex items-center justify-between text-xs text-zinc-400">
