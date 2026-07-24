@@ -1,4 +1,24 @@
+'use client';
+
+import React from 'react';
+import { useAssetStore } from '@/store/useAssetStore';
+import AssetSection from '@/components/dashboard/AssetSection';
+import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
+
 export default function Home() {
+  const { getTotalNetWorth, getMonthlyDividend, isPrivate, togglePrivacy } = useAssetStore();
+
+  const totalNetWorth = getTotalNetWorth();
+  const monthlyDividend = getMonthlyDividend();
+
+  const formatCurrency = (val: number) => {
+    if (isPrivate) return '••••••••';
+    return `₩ ${val.toLocaleString()}`;
+  };
+
+  const fireTarget = 500000000; // 5.0억 원
+  const fireProgress = Math.min(100, Number(((totalNetWorth / fireTarget) * 100).toFixed(1)));
+
   return (
     <div className="min-h-screen bg-black text-zinc-100 p-6 md:p-12 font-sans selection:bg-zinc-800">
       <main className="max-w-4xl mx-auto space-y-8">
@@ -9,29 +29,40 @@ export default function Home() {
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs uppercase tracking-widest text-zinc-400 font-mono">Financial OS</span>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-white">Mission Control</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+              Mission Control
+              <button
+                onClick={togglePrivacy}
+                className="p-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition text-xs"
+                title="금액 마스킹 토글"
+              >
+                {isPrivate ? <EyeOff className="w-4 h-4 text-amber-400" /> : <Eye className="w-4 h-4 text-emerald-400" />}
+              </button>
+            </h1>
           </div>
           <div className="text-left sm:text-right">
-            <p className="text-xs text-zinc-400 font-mono">LIFETIME SYSTEM</p>
+            <p className="text-xs text-zinc-400 font-mono flex items-center justify-end gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> PRIVACY-FIRST OS
+            </p>
             <p className="text-sm text-zinc-300 font-medium">Apple Health Minimal Dashboard</p>
           </div>
         </header>
 
-        {/* Dashboard Grid - 4 Minimal Cards */}
+        {/* Dashboard Grid - Dynamic 4 Minimal Cards */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Card 1: 총 자산 */}
           <div className="group relative bg-zinc-900/60 border border-zinc-800/80 rounded-3xl p-6 hover:border-zinc-700 transition-all duration-300 backdrop-blur-xl">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-zinc-400">총 자산</span>
+              <span className="text-sm font-medium text-zinc-400">총 자산 (Net Worth)</span>
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                +2.4% 전월 대비
+                실시간 연산
               </span>
             </div>
             <div className="space-y-1">
-              <div className="text-3xl font-extrabold tracking-tight text-white">
-                ₩ 342,800,000
+              <div className="text-3xl font-extrabold tracking-tight text-white font-mono">
+                {formatCurrency(totalNetWorth)}
               </div>
-              <p className="text-xs text-zinc-400">순자산 (부채 제외 실질 자본)</p>
+              <p className="text-xs text-zinc-400">포트폴리오 합산 실질 순자산</p>
             </div>
           </div>
 
@@ -39,17 +70,17 @@ export default function Home() {
           <div className="group relative bg-zinc-900/60 border border-zinc-800/80 rounded-3xl p-6 hover:border-zinc-700 transition-all duration-300 backdrop-blur-xl">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-zinc-400">FIRE 진행률</span>
-              <span className="text-sm font-bold text-amber-400">68.5%</span>
+              <span className="text-sm font-bold text-amber-400">{fireProgress}%</span>
             </div>
             <div className="space-y-3">
               <div className="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
                 <div 
                   className="bg-gradient-to-r from-amber-500 to-orange-400 h-full rounded-full transition-all duration-500" 
-                  style={{ width: '68.5%' }}
+                  style={{ width: `${fireProgress}%` }}
                 />
               </div>
               <div className="flex justify-between text-xs text-zinc-400">
-                <span>현재: 3.42억 원</span>
+                <span>달성: {isPrivate ? '••••' : `${(totalNetWorth / 100000000).toFixed(2)}억`}</span>
                 <span>목표: 5.0억 원</span>
               </div>
             </div>
@@ -60,21 +91,21 @@ export default function Home() {
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm font-medium text-zinc-400">예상 월 자가배당</span>
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                연 4% 룰 적용
+                연 4% 룰
               </span>
             </div>
             <div className="space-y-1">
-              <div className="text-3xl font-extrabold tracking-tight text-white">
-                ₩ 1,140,000 <span className="text-sm font-normal text-zinc-400">/ 월</span>
+              <div className="text-3xl font-extrabold tracking-tight text-white font-mono">
+                {formatCurrency(monthlyDividend)} <span className="text-sm font-normal text-zinc-400">/ 월</span>
               </div>
-              <p className="text-xs text-zinc-400">노동 없이 자본이 창출하는 월 현금흐름</p>
+              <p className="text-xs text-zinc-400">자본이 자동 창출하는 월 현금 흐름</p>
             </div>
           </div>
 
-          {/* Card 4: NISA 진행률 */}
+          {/* Card 4: NISA / 비과세 진행률 */}
           <div className="group relative bg-zinc-900/60 border border-zinc-800/80 rounded-3xl p-6 hover:border-zinc-700 transition-all duration-300 backdrop-blur-xl">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-zinc-400">NISA 진행률</span>
+              <span className="text-sm font-medium text-zinc-400">NISA / 절세 한도</span>
               <span className="text-sm font-bold text-indigo-400">82.0%</span>
             </div>
             <div className="space-y-3">
@@ -85,20 +116,24 @@ export default function Home() {
                 />
               </div>
               <div className="flex justify-between text-xs text-zinc-400">
-                <span>납입금: 295만 엔</span>
+                <span>납입: 295만 엔</span>
                 <span>연간 한도: 360만 엔</span>
               </div>
             </div>
           </div>
         </section>
 
+        {/* Asset Breakdown Section (Issue #3) */}
+        <AssetSection />
+
         {/* Status Footer */}
         <footer className="pt-6 border-t border-zinc-800/60 flex items-center justify-between text-xs text-zinc-400">
-          <span>Financial OS Version 0.1 (MVP)</span>
+          <span>Financial OS Version 0.2 (Asset Store Integrated)</span>
           <span>Apple Health Minimal Theme</span>
         </footer>
       </main>
     </div>
   );
 }
+
 

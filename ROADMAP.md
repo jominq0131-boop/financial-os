@@ -7,7 +7,7 @@
 ### 🟢 Phase 1: MVP Core Foundation & Minimal Dashboard
 - [x] **Issue #1**: Next.js 15+ App Router, TypeScript, Tailwind CSS, ESLint 프로젝트 환경 구축
 - [x] **Issue #2**: Dashboard UI - Apple Health 스타일 미니멀 카드 4종 (총 자산, FIRE 진행률, 예상 월 자가배당, NISA 진행률 더미 데이터)
-- [ ] **Issue #3**: Asset Model & Management UI - 자산 항목(현금, 주식, 부동산) 등록/마스킹 및 뷰 컴포넌트
+- [x] **Issue #3**: Asset Model & Management UI - 자산 항목(현금, 주식, 부동산) 등록/마스킹 및 뷰 컴포넌트
 
 ---
 
