@@ -7,6 +7,9 @@ import RunwaySection from '@/components/dashboard/RunwaySection';
 import BucketSection from '@/components/dashboard/BucketSection';
 import LifeEventSection from '@/components/dashboard/LifeEventSection';
 import ForecastChart from '@/components/dashboard/ForecastChart';
+import StressTestSection from '@/components/dashboard/StressTestSection';
+import TimePriceCalculator from '@/components/dashboard/TimePriceCalculator';
+import LiquidityMatrix from '@/components/dashboard/LiquidityMatrix';
 import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
 
 export default function Home() {
@@ -142,10 +145,19 @@ export default function Home() {
         {/* 50 Year Timeline Asset Forecast Chart (Issue #7) */}
         <ForecastChart />
 
+        {/* Stress Test Simulator Section (Issue #8) */}
+        <StressTestSection />
+
+        {/* Time-Price Expenditure Calculator (Issue #9) */}
+        <TimePriceCalculator />
+
+        {/* Liquidity Matrix & Data Vault (Issue #10) */}
+        <LiquidityMatrix />
+
         {/* Status Footer */}
         <footer className="pt-6 border-t border-zinc-800/60 flex items-center justify-between text-xs text-zinc-400">
-          <span>Financial OS Version 0.2 (Asset Store Integrated)</span>
-          <span>Apple Health Minimal Theme</span>
+          <span>Financial OS Version 1.0 — MVP Complete</span>
+          <span>Privacy-First · Local-Only · Japan NISA Ready</span>
         </footer>
       </main>
     </div>

@@ -14,4 +14,5 @@
 - **Issue #5**: 3-Tier 자본 배치 버킷 관리자 (`BucketSection`), 목표 비중 조율 슬라이더, 실시간 자산 비중 연산 및 스마트 리밸런싱 스마트 가이드 뱃지 구현
 - **Issue #6**: 생애 주기 이정표 타임라인 스토어 (`useTimelineStore`), 이벤트 노드 카드 뷰 (`LifeEventSection`), 미션 이벤트 등록 모달 (`AddEventModal`) 구현
 - **Issue #7**: 50년 자산 추이 시뮬레이션 연산 엔진 (`simulationEngine.ts`), Recharts 기반 실시간 장기 자산 곡선 및 생애 미션 지출 툴팁 차트 (`ForecastChart.tsx`) 구현
+- **Issue #8**: 위기 대응 스트레스 테스트 연산 엔진 (`stressTestEngine.ts`), 시장 폭락(-30%), 고물가 급등(+25%), 복합 위기(Black Swan) 시나리오 시뮬레이터 카드 (`StressTestSection.tsx`) 구현
 - **Project Memory System**: `README.md`, `PROJECT_RULES.md`, `ROADMAP.md`, `CHANGELOG.md`, `TODO.md` 메모리 파일 구축
