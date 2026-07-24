@@ -11,10 +11,10 @@
 - [x] **Issue #3**: Asset Model & Card - 자산 항목(현금, 주식, 부동산) 등록/마스킹 및 뷰 컴포넌트
 - [x] **Issue #4**: Financial Runway & Surplus Engine - 월 수입/지출 및 생존 가능 월수(Runway) 연산 모듈
 - [x] **Issue #5**: 3-Tier Capital Allocation Manager - 안전망(Tier 1), 성장(Tier 2), 미션(Tier 3) 버킷 배분 슬라이더
-- [ ] **Issue #6**: Life Event Milestone System - 주택, 은퇴 등 생애 이벤트 노드 관리 및 타임라인 모듈
+- [x] **Issue #6**: Life Event Milestone System - 주택, 은퇴 등 생애 이벤트 노드 관리 및 타임라인 모듈
+- [ ] **Issue #7**: Timeline Asset Forecast Chart - 50년 자산 추이 시각화 그래프 (Recharts)
 
 ---
 
-## 📋 Next Tasks (Issue #6 진행 예정)
-- [ ] 생애 주기 미션 이벤트 타입 정의 (`types/timeline.ts`) 및 Zustand 스토어 구축 (`useTimelineStore.ts`)
-- [ ] 타임라인 이벤트 노드 등록/수정 모달 및 생애 주기 이정표 카드 뷰 구현
+## 📋 Next Tasks (Issue #7 진행 예정)
+- [ ] Recharts 차트 패키지 설치 및 50년 생애 자산 추이 연산 차트 컴포넌트 (`ForecastChart.tsx`) 구현

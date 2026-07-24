@@ -12,4 +12,5 @@
 - **Issue #3**: Asset Model 및 Zustand 전역 자산 스토어 (`useAssetStore`), 자산 카테고리별 관리 UI (`AssetSection`), 자산 추가 모달 (`AddAssetModal`), 금액 마스킹(Privacy Toggle `👁️`/`🙈`) 구현
 - **Issue #4**: Financial Runway 연산 엔진 (`runwayEngine.ts`), 월 현금흐름 스토어 (`useCashflowStore`), 생존 가능 기간 게이지 & 수입/지출 관리 카드 (`RunwaySection`) 구현
 - **Issue #5**: 3-Tier 자본 배치 버킷 관리자 (`BucketSection`), 목표 비중 조율 슬라이더, 실시간 자산 비중 연산 및 스마트 리밸런싱 스마트 가이드 뱃지 구현
+- **Issue #6**: 생애 주기 이정표 타임라인 스토어 (`useTimelineStore`), 이벤트 노드 카드 뷰 (`LifeEventSection`), 미션 이벤트 등록 모달 (`AddEventModal`) 구현
 - **Project Memory System**: `README.md`, `PROJECT_RULES.md`, `ROADMAP.md`, `CHANGELOG.md`, `TODO.md` 메모리 파일 구축
