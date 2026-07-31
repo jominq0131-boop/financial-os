@@ -31,7 +31,7 @@ export default function AddAssetModal({ isOpen, onClose }: AddAssetModalProps) {
       tier,
       amount: Number(amount),
       expectedYield: Number(expectedYield),
-      currency: 'KRW',
+      currency: 'JPY',
     });
 
     // Reset & Close

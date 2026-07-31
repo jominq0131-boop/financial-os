@@ -1,29 +1,31 @@
-export type AssetCategory = 'CASH' | 'STOCK' | 'REAL_ESTATE' | 'PENSION' | 'OTHERS';
+export type AssetCategory = 'CASH' | 'STOCK' | 'REAL_ESTATE' | 'PENSION' | 'NISA' | 'IDECO' | 'OTHERS';
 export type BucketTier = 'TIER_1_SAFETY' | 'TIER_2_GROWTH' | 'TIER_3_MISSION';
-export type Currency = 'KRW' | 'USD' | 'JPY';
+export type Currency = 'JPY' | 'USD' | 'EUR';
 
 export interface Asset {
   id: string;
   name: string;
   category: AssetCategory;
   tier: BucketTier;
-  amount: number; // KRW 원화 환산 기준 기본값
-  expectedYield: number; // 연간 기대 수익률 (%)
+  amount: number;        // JPY 円換算
+  expectedYield: number; // 年間期待収益率 (%)
   currency: Currency;
   notes?: string;
   updatedAt: string;
 }
 
 export const CATEGORY_LABELS: Record<AssetCategory, { label: string; color: string }> = {
-  CASH: { label: '현금 / 예적금', color: 'emerald' },
-  STOCK: { label: '주식 / ETF', color: 'cyan' },
-  REAL_ESTATE: { label: '부동산 / 실물', color: 'amber' },
-  PENSION: { label: '연금 / IRP', color: 'indigo' },
-  OTHERS: { label: '대안 자산 / 기타', color: 'purple' },
+  CASH:        { label: '現金 / 普通預金', color: 'emerald' },
+  STOCK:       { label: '株式 / ETF',      color: 'cyan' },
+  REAL_ESTATE: { label: '不動産 / 実物',   color: 'amber' },
+  PENSION:     { label: '年金 / iDeCo',    color: 'indigo' },
+  NISA:        { label: 'NISA (新NISA)',   color: 'purple' },
+  IDECO:       { label: 'iDeCo',           color: 'blue' },
+  OTHERS:      { label: 'その他',           color: 'zinc' },
 };
 
 export const TIER_LABELS: Record<BucketTier, string> = {
-  TIER_1_SAFETY: 'Tier 1: 안전망 (Safety)',
-  TIER_2_GROWTH: 'Tier 2: 성장 (Growth)',
-  TIER_3_MISSION: 'Tier 3: 미션/꿈 (Mission)',
+  TIER_1_SAFETY:  'Tier 1：安全網 (Safety)',
+  TIER_2_GROWTH:  'Tier 2：成長 (Growth)',
+  TIER_3_MISSION: 'Tier 3：夢・ミッション (Mission)',
 };
