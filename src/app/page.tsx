@@ -28,6 +28,7 @@ import FinancialLevelCard from '@/components/dashboard/FinancialLevelCard';
 import GoalTrackerSection from '@/components/dashboard/GoalTrackerSection';
 import SpendingTemperatureCard from '@/components/dashboard/SpendingTemperatureCard';
 import FireRoutineCard from '@/components/dashboard/FireRoutineCard';
+import FireAdvisorCard from '@/components/dashboard/FireAdvisorCard';
 import Tooltip from '@/components/common/Tooltip';
 import { formatJPY, formatJPYShort } from '@/utils/currency';
 import { Sparkles, ShieldCheck, ArrowUpRight, TrendingUp } from 'lucide-react';
@@ -181,7 +182,10 @@ export default function Home() {
                 </div>
               </section>
 
-              {/* 2. Goal Achievement & Pace Tracker */}
+              {/* 2. FIRE Financial Advisor & Optimization Guide */}
+              <FireAdvisorCard />
+
+              {/* 3. Goal Achievement & Pace Tracker */}
               <GoalTrackerSection />
 
               {/* 3. 50 Year Forecast Chart (Future Prediction) */}
