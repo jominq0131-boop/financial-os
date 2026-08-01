@@ -12,6 +12,7 @@ interface CashflowStore {
   getTotalExpense: () => number;
   getEssentialExpense: () => number;
   getNetSurplus: () => number;
+  getCategoryExpenses: () => { category: string; amount: number }[];
 }
 
 const INITIAL_CASHFLOWS: CashflowItem[] = [
@@ -130,6 +131,18 @@ export const useCashflowStore = create<CashflowStore>()(
 
       getNetSurplus: () =>
         get().getTotalIncome() - get().getTotalExpense(),
+
+      getCategoryExpenses: () => {
+        const expenses = get().items.filter(
+          (i) => i.type === 'EXPENSE_FIXED' || i.type === 'EXPENSE_VARIABLE'
+        );
+        const map: Record<string, number> = {};
+        expenses.forEach((i) => {
+          const cat = i.category || '기타';
+          map[cat] = (map[cat] || 0) + i.amount;
+        });
+        return Object.entries(map).map(([category, amount]) => ({ category, amount }));
+      },
     }),
     {
       name: 'financial-os-cashflow',

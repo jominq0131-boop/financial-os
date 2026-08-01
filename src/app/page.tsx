@@ -23,6 +23,7 @@ import TaxReturnSection from '@/components/dashboard/TaxReturnSection';
 import SavingsPlannerSection from '@/components/dashboard/SavingsPlannerSection';
 import MonthlyBriefingCard from '@/components/dashboard/MonthlyBriefingCard';
 import EmergencyFundCard from '@/components/dashboard/EmergencyFundCard';
+import FinancialLevelCard from '@/components/dashboard/FinancialLevelCard';
 import Tooltip from '@/components/common/Tooltip';
 import { formatJPY, formatJPYShort } from '@/utils/currency';
 import { Sparkles, ShieldCheck, ArrowUpRight, TrendingUp } from 'lucide-react';
@@ -92,6 +93,9 @@ export default function Home() {
             <div className="space-y-8 animate-fade-in">
               {/* Executive Monthly Performance Briefing Center */}
               <MonthlyBriefingCard />
+
+              {/* Gamified FIRE Rank & Quest Badges */}
+              <FinancialLevelCard />
 
               {/* 4 KPI Cards */}
               <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -7,10 +7,17 @@ import { calculateFinancialRunway } from '@/engine/runwayEngine';
 import { CASHFLOW_TYPE_LABELS, CashflowType } from '@/types/cashflow';
 import { formatJPY } from '@/utils/currency';
 import Tooltip from '@/components/common/Tooltip';
-import { Flame, Plus, Trash2, ArrowUpRight, ArrowDownRight, Activity, Edit3 } from 'lucide-react';
+import { Flame, Plus, Trash2, ArrowUpRight, ArrowDownRight, Activity, Edit3, PieChart as PieIcon } from 'lucide-react';
 import EditCashflowModal from './EditCashflowModal';
 import EmergencyFundCard from './EmergencyFundCard';
-import { CashflowItem } from '@/types/cashflow';
+import { CashflowItem, EXPENSE_CATEGORY_COLORS } from '@/types/cashflow';
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip as RechartsTooltip,
+} from 'recharts';
 
 export default function RunwaySection() {
   const { items, addItem, deleteItem, getTotalIncome, getTotalExpense, getEssentialExpense, getNetSurplus } =
@@ -34,12 +41,28 @@ export default function RunwaySection() {
 
   const runwayResult = calculateFinancialRunway(liquidAssets, essentialExpense, passiveIncome);
 
-  // Form State
   const [title, setTitle] = useState('');
   const [type, setType] = useState<CashflowType>('EXPENSE_FIXED');
+  const [categoryInput, setCategoryInput] = useState('주거');
   const [amount, setAmount] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingItem, setEditingItem] = useState<CashflowItem | null>(null);
+
+  // 카테고리별 지출 데이터 연산 (도넛 차트용)
+  const expenseItems = items.filter(
+    (i) => i.type === 'EXPENSE_FIXED' || i.type === 'EXPENSE_VARIABLE'
+  );
+  const categoryMap: Record<string, number> = {};
+  expenseItems.forEach((i) => {
+    const cat = i.category || '기타';
+    categoryMap[cat] = (categoryMap[cat] || 0) + i.amount;
+  });
+
+  const donutChartData = Object.entries(categoryMap).map(([name, value]) => ({
+    name,
+    value,
+    color: EXPENSE_CATEGORY_COLORS[name] || '#8b5cf6',
+  }));
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +72,7 @@ export default function RunwaySection() {
       title,
       type,
       amount: Number(amount),
-      category: type.includes('INCOME') ? '수입' : '지출',
+      category: type.includes('INCOME') ? '수입' : categoryInput || '기타',
       isEssential: true,
     });
 
@@ -151,6 +174,70 @@ export default function RunwaySection() {
           </div>
           <div className="text-2xl font-bold text-cyan-400 font-mono">
             {formatVal(netSurplus)}
+          </div>
+        </div>
+      </div>
+
+      {/* Expense Breakdown Donut Chart */}
+      <div className="bg-zinc-900/60 border border-zinc-800/90 rounded-3xl p-6 backdrop-blur-xl">
+        <h4 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
+          <PieIcon className="w-4 h-4 text-rose-400" />
+          월 지출 세부 카테고리별 비중 분석 (Expense Breakdown)
+        </h4>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+          <div className="md:col-span-5 h-48 w-full">
+            {donutChartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={donutChartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={75}
+                    paddingAngle={4}
+                    dataKey="value"
+                  >
+                    {donutChartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} stroke="#18181b" strokeWidth={2} />
+                    ))}
+                  </Pie>
+                  <RechartsTooltip
+                    contentStyle={{
+                      backgroundColor: '#18181b',
+                      borderColor: '#27272a',
+                      borderRadius: '12px',
+                      color: '#fff',
+                      fontSize: '12px',
+                    }}
+                    formatter={(val: any) => [isPrivate ? '••••••••' : formatJPY(Number(val)), '지출액']}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full flex items-center justify-center text-xs text-zinc-500">
+                등록된 지출 항목이 없습니다.
+              </div>
+            )}
+          </div>
+
+          <div className="md:col-span-7 space-y-2">
+            {donutChartData.map((item) => {
+              const percent = totalExpense > 0 ? ((item.value / totalExpense) * 100).toFixed(1) : '0';
+              return (
+                <div key={item.name} className="flex items-center justify-between text-xs bg-zinc-950/60 border border-zinc-800/80 rounded-xl px-3.5 py-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                    <span className="font-semibold text-white">{item.name}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-zinc-400">{percent}%</span>
+                    <span className="font-mono font-bold text-rose-400">{formatVal(item.value)}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

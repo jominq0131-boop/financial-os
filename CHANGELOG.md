@@ -2,29 +2,28 @@
 
 ---
 
+## [1.8.0] - 2026-08-01
+
+### Added
+- **게이밍 재정 성장 랭킹 & FIRE 퀘스트 업적 시스템 (`FinancialLevelCard.tsx`)**:
+  - 총 자산 및 월 저축률 기반 **재정 레벨(Lv. 1 ~ Lv. 99)**, **경험치(XP)** 바 및 칭호(`Lv. 14 에이스 자본가` 등) 연산
+  - **4대 FIRE 메인 퀘스트 배지**: 🛡️ `3개월 비상금 수호자`, 📈 `신NISA 파이어니어`, 🚀 `8자리 자본가`, 👑 `FIRE 쿼터 백`
+- **월 지출 세부 카테고리별 비중 분석 도넛 차트 (`RunwaySection.tsx`)**:
+  - 지출 항목을 **주거(월세/공과금), 식비(장보기/외식), 고정비, 여가, 투자(NISA/적립), 기타**로 세분화
+  - 월 총 지출 중 카테고리별 점유율을 시각적 도넛 차트(Recharts PieChart)로 분석
+
+---
+
 ## [1.7.0] - 2026-08-01
 
 ### Added
 - **GitHub Pages 100% 무료 자동 웹 배포 환경 구축**:
   - `next.config.ts` — `output: 'export'`, `images: { unoptimized: true }`, `basePath: '/financial-os'` 정적 빌드 옵션 적용
-  - `.github/workflows/deploy.yml` — `main` 브랜치 푸시 시 자동으로 빌드 및 GitHub Pages 배포 연동
-- **100% 브라우저 Local Storage 보안 아키텍처 완결**:
-  - 서버 및 데이터베이스 0%, 사용자 브라우저 `localStorage`에만 데이터 안전 보존
+  - `.github/workflows/deploy.yml` — `main` 브랜치 푸시 시 자동 정적 빌드 및 배포
 
 ---
 
 ## [1.6.0] - 2026-08-01
 
 ### Added
-- **스냅샷 정산년월(YYYY-MM) 수동 지정 기능**:
-  - 8월 1일에 접속해서 지난 7월 데이터(`2026-07`)를 지정하여 스냅샷 마감
-- **스냅샷 수정(Edit) 모달 (`EditSnapshotModal.tsx`)**:
-  - 이미 기록된 스냅샷의 날짜/평가액/메모 수정 및 날짜 오름차순 자동 정렬
-
----
-
-## [1.5.0] - 2026-08-01
-
-### Added
-- **월간 재정 성과 브리핑 센터 (`MonthlyBriefingCard.tsx`)**:
-  - `🚀 관제 요약 (Overview)` 최상단 전월 대비 자산 변화액(MoM JPY) 및 성장률(% 흑자/적자) 브리핑
+- **스냅샷 정산년월(YYYY-MM) 수동 지정 기능 및 편집 모달 (`EditSnapshotModal.tsx`)**

@@ -90,13 +90,20 @@ export default function EditCashflowModal({ isOpen, onClose, item }: EditCashflo
 
             <div>
               <label className="block text-xs text-zinc-400 mb-1">카테고리</label>
-              <input
-                type="text"
+              <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-emerald-500"
-                placeholder="예: 주거, 식비"
-              />
+              >
+                <option value="주거">주거 (월세/공과금)</option>
+                <option value="식비">식비 (장보기/외식)</option>
+                <option value="고정비">고정비 (통신/수수료)</option>
+                <option value="여가">여가 (취미/자기계발)</option>
+                <option value="투자">투자 (NISA/적립)</option>
+                <option value="기타">기타</option>
+                <option value="급여">급여 (수입)</option>
+                <option value="배당">배당 (수입)</option>
+              </select>
             </div>
           </div>
 
