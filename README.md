@@ -1,12 +1,16 @@
-# 🚀 Financial OS · Japan Edition (v1.6)
+# 🚀 Financial OS · Japan Edition (v1.7)
 
-> **"Financial OS는 일본에 거주하는 한국인이 자산(엔화 ￥ 기준), 현금흐름, 신NISA, 50년 생애 주기를 100% 수동 입력과 월간 성과 브리핑으로 총괄 제어하는 개인 재정 관제 시스템입니다."**
+> **"Financial OS는 일본에 거주하는 한국인이 자산(엔화 ￥ 기준), 현금흐름, 신NISA, 50년 생애 주기를 100% 무료 GitHub Pages와 브라우저 로컬 보안으로 총괄 제어하는 개인 재정 관제 시스템입니다."**
 
 ---
 
 ## 📌 핵심 특징
 
-### 📅 정산년월 수동 지정 & 스냅샷 편집 (New in v1.6)
+### 🌐 100% 무료 GitHub Pages 자동 웹 배포 (New in v1.7)
+- `npm run dev` 없이 스마트폰/PC 웹 브라우저에서 상시 접속 (`https://jominq0131-boop.github.io/financial-os/`)
+- 백엔드 서버 없이 브라우저 `localStorage`에만 데이터가 저장되어 **서버 비용 0원 + 개인정보 유출 위험 0%** 완벽 보장
+
+### 📅 정산년월 수동 지정 & 스냅샷 편집 (v1.6)
 - **과거 정산년월 지정 가능**: 8월 1일에 접속해서 지난 7월 데이터(`2026-07`)를 지정하여 스냅샷 기록 가능
 - **스냅샷 수정(Edit ✏️) 모달**: 이미 찍은 스냅샷의 날짜, 금액, 메모를 언제든지 수정 가능 (`EditSnapshotModal.tsx`)
 
@@ -20,29 +24,18 @@
 - **`🎯 세제 & FIRE 플래너 (Intelligence & Milestones)`**: 신NISA 트래커 + 세후 실수익 시뮬레이터 + 목표 저축률 플래너 + 생애 마일스톤
 - **`📊 성장이력 & 데이터 보안 (Snapshots & Security)`**: 월간 순자산 스냅샷 차트 + 위기 스트레스 테스트 + 4단계 유동성 매트릭스 + JSON 백업/이력
 
-### 🌏 100% 수동 입력 · 완전 무료 · 일본 거주 한국인 맞춤형
-- 계좌 연동이나 유료 API 없이 **100% 수동 입력 제 1 원칙** 준수
-- 모든 화면 메뉴, 카드, 모달, 안내 문구는 **한국어**로 제공
-- 모든 금액 연산은 **일본 엔화(JPY ￥)** 기준으로 일관 처리
-
 ---
 
 ## 🛠️ 기술 스택
 
 | 구분 | 사용 기술 |
 |---|---|
-| Framework | Next.js 16 (App Router, Turbopack) |
+| Framework | Next.js 16 (App Router, Turbopack, Static Export) |
+| CI/CD | GitHub Actions (`.github/workflows/deploy.yml`) |
+| Deployment | GitHub Pages (100% Free Hosting) |
 | Language | TypeScript (Strict Mode) |
 | Architecture | Modular Component Driven Architecture |
 | Styling | Tailwind CSS + Glassmorphism |
 | State & Storage | Zustand + `persist` middleware (`localStorage`) |
 | Visualization | Recharts (Area Chart, Composed Chart) |
 | Icons | Lucide React |
-
----
-
-## 🌐 무료 웹 호스팅 안내 (GitHub Pages / Vercel Free)
-
-`npm run dev` 없이 스마트폰/PC에서 100% 무료로 접속하려면:
-1. **GitHub Pages (무료)**: `next.config.js`에 `output: 'export'` 설정 후 GitHub 커밋 시 자동으로 내 웹사이트 생성
-2. **Vercel (무료)**: Vercel에 GitHub 저장소 연동 시 클릭 한번으로 무료 SSL 웹사이트 배포 완료

@@ -65,10 +65,30 @@
 
 ---
 
+## ✅ Phase 6: 100% Free GitHub Pages Deployment & Advanced Privacy (완료 — 2026-08-01)
+
+| 이슈 | 기능 | 상태 |
+|---|---|:---:|
+| #23 | **GitHub Pages 100% 무료 자동 웹 배포** — `output: 'export'` 정적 빌드 및 `.github/workflows/deploy.yml` | ✅ |
+| #24 | **브라우저 100% 로컬 데이터 보안 증명** — 백엔드/서버 0%, `localStorage` 전용 개인재정 보호 완결 | ✅ |
+
+---
+
+## 🌟 Phase 7: Product Polish & Precision Utilities (예정 — 2026 Q4)
+
+| 이슈 | 기능 | 우선순위 |
+|---|---|:---:|
+| #25 | **자산 카테고리별 목표 비중(Target Allocation %) 지정 및 리밸런싱 가이드** | 🔴 High |
+| #26 | **지출 카테고리별(주거, 식비, 고정비, 미용 등) 세부 현금흐름 다이어그램** | 🟡 Medium |
+| #27 | **FIRE 은퇴 시점 시뮬레이션 인플레이션(연 1~3%) 변수 조절 슬라이더** | 🟡 Medium |
+
+---
+
 ## 💡 개선 완료 사항 (Completed Improvements)
 
 | 항목 | 이전 상태 | 개선 결과 | 상태 |
 |---|---|---|:---:|
+| 웹 접속 방법 | `npm run dev` 필요 | GitHub Pages 100% 무료 웹 상시 접속 (`output: export`) | ✅ |
 | 스냅샷 정산년월 | 오늘 날짜 고정 | 마감 시 `YYYY-MM` 수동 지정 가능 (8월에 7월 데이터 입력 가능) | ✅ |
 | 스냅샷 수정 | 삭제만 가능 | `EditSnapshotModal` 날짜/평가액/메모 인라인 수정 기능 추가 | ✅ |
 | 월간 성과 브리핑 | 지표 파악 어려움 | Overview 최상단 전월 대비 변동액(+￥/%) 및 원터치 월말 정산 카드 | ✅ |

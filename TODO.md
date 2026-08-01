@@ -31,7 +31,7 @@
 - [x] **#16** Hydration 에러 해결 (`useHydrated()` 훅 도입)
 - [x] **#17** Git 자동 커밋 & 푸시 의무화 (PROJECT_RULES.md에 강제 규칙화)
 
-### Phase 5: Financial Intelligence & Navigation Architecture (완료 — 2026-08-01)
+### Phase 5: Financial Intelligence & Custom Date Snapshots (완료 — 2026-08-01)
 - [x] **#18** 월간 순자산 스냅샷 — 매월 자산 현황 자동 기록 및 월별 증감 추이 차트
 - [x] **#18-2** 월간 재정 성과 브리핑 센터 — 전월 대비 자산 변화액(+￥), 흑자/적자 % & 원터치 월말 정산 마감
 - [x] **#18-3** 정산년월 수동 선택 및 스냅샷 수정 모달 (`EditSnapshotModal`) — 8월에 7월 데이터 정산 가능
@@ -40,5 +40,15 @@
 - [x] **#21** 세후 실수익 계산기 — 신NISA/일반 계좌별 세금(20.315%) 차감 실질 수익률
 - [x] **#22** 목표 저축률 플래너 — FIRE 목표 달성을 위한 월별 필요 저축액 자동 역산
 - [x] **#22-2** 사이드바 & 탭 네비게이션 — 4대 도메인 뷰(Overview, Assets, Intelligence, Security) 분리
-- [x] 자산/현금흐름/생애 이벤트 인라인 수정(Edit) 모달 구현
-- [x] 사용자 설정(동적 연령, 비상금 개월, iDeCo 토글, FIRE 목표금액) 모달 구축
+
+### Phase 6: 100% Free GitHub Pages Deployment (완료 — 2026-08-01)
+- [x] **#23** Next.js static export (`output: 'export'`) & `.github/workflows/deploy.yml` 자동 배포 연동
+- [x] **#24** 브라우저 전용 `localStorage` 개인 재정 정보 보안 호환성 검증
+
+---
+
+## 🌟 Next Recommended Tasks (다음 추천 작업 후보)
+
+- [ ] **#25** 자산 카테고리별 목표 비중(Target Allocation %) 지정 및 리밸런싱 가이드 기능
+- [ ] **#26** 지출 카테고리별(주거비, 식비, 고정비 등) 세부 현금흐름 다이어그램
+- [ ] **#27** FIRE 은퇴 자산 추이 시뮬레이션 내 인플레이션 변수(연 1~3%) 조절 슬라이더
