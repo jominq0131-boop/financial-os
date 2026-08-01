@@ -26,6 +26,7 @@ import MonthlyBriefingCard from '@/components/dashboard/MonthlyBriefingCard';
 import EmergencyFundCard from '@/components/dashboard/EmergencyFundCard';
 import FinancialLevelCard from '@/components/dashboard/FinancialLevelCard';
 import GoalTrackerSection from '@/components/dashboard/GoalTrackerSection';
+import SpendingTemperatureCard from '@/components/dashboard/SpendingTemperatureCard';
 import Tooltip from '@/components/common/Tooltip';
 import { formatJPY, formatJPYShort } from '@/utils/currency';
 import { Sparkles, ShieldCheck, ArrowUpRight, TrendingUp } from 'lucide-react';
@@ -208,6 +209,7 @@ export default function Home() {
             <div className="space-y-8 animate-fade-in">
               <AssetSection />
               <RunwaySection />
+              <SpendingTemperatureCard />
               <BucketSection />
             </div>
           )}
