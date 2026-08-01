@@ -115,7 +115,7 @@ export default function Home() {
                     {fmt(totalNetWorth)}
                   </div>
                   <p className="text-[11px] text-zinc-400 mt-1">
-                    {isPrivate ? '' : `≈ ${fmtShort(totalNetWorth)} (현금+주식+NISA+연금+부동산)`}
+                    {isPrivate ? '' : '현금 + 주식 + 신NISA + iDeCo + 부동산 전 계좌 합산액'}
                   </p>
                 </div>
 

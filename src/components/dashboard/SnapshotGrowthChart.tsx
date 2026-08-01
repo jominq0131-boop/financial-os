@@ -135,7 +135,7 @@ export default function SnapshotGrowthChart() {
         <div className="bg-zinc-800/40 border border-zinc-800 rounded-2xl p-4">
           <span className="text-xs text-zinc-400 block mb-1">현재 총자산</span>
           <span className="text-lg font-bold text-white font-mono">
-            {isPrivate ? '••••••••' : formatJPYShort(currentNetWorth)}
+            {isPrivate ? '••••••••' : formatJPY(currentNetWorth)}
           </span>
         </div>
 
@@ -151,7 +151,7 @@ export default function SnapshotGrowthChart() {
             ) : (
               <TrendingDown className="w-4 h-4" />
             )}
-            {isPrivate ? '••••' : `${formatJPYShort(momGrowth)} (${momPercent}%)`}
+            {isPrivate ? '••••' : `${formatJPY(momGrowth)} (${momPercent}%)`}
           </span>
         </div>
 

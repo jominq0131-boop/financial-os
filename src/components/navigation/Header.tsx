@@ -70,7 +70,7 @@ export default function Header({
         <div className="text-right">
           <span className="text-[10px] text-zinc-400 font-mono block">현재 총자산</span>
           <span className="text-sm font-bold text-emerald-400 font-mono">
-            {!isHydrated ? '￥ 0' : isPrivate ? '￥ ••••••••' : formatJPYShort(currentNetWorth)}
+            {!isHydrated ? '￥ 0' : isPrivate ? '￥ ••••••••' : formatJPY(currentNetWorth)}
           </span>
         </div>
 

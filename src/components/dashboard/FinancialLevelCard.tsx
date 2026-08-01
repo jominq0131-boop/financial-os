@@ -6,7 +6,8 @@ import { useCashflowStore } from '@/store/useCashflowStore';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import Tooltip from '@/components/common/Tooltip';
-import { ShieldCheck, Award, Flame, Zap, Trophy, Crown, Sparkles } from 'lucide-react';
+import { formatJPY } from '@/utils/currency';
+import { ShieldCheck, Award, Flame, Zap, Trophy, Crown, CheckCircle2, Lock } from 'lucide-react';
 
 export default function FinancialLevelCard() {
   const isHydrated = useHydrated();
@@ -34,7 +35,9 @@ export default function FinancialLevelCard() {
   const bonusLevel = Math.floor(surplusRate / 20); // 20% 저축률당 +1 레벨
   const currentLevel = Math.min(99, baseLevel + bonusLevel);
 
-  // 경험치 (XP) % 연산 (다음 레벨 200만엔 구간 대비 현 자산 비율)
+  // 다음 레벨 구간 계산
+  const nextLevelAssetTarget = baseLevel * 2000000;
+  const nextLevelRemainingJPY = Math.max(0, nextLevelAssetTarget - totalNetWorth);
   const currentXpProgress = Math.min(100, Math.floor(((totalNetWorth % 2000000) / 2000000) * 100));
 
   // 칭호 결정
@@ -47,18 +50,26 @@ export default function FinancialLevelCard() {
     return '🌱 초보 탐험가 (Financial Novice)';
   };
 
-  // 4대 FIRE 퀘스트 업적 검증
-  const isEmergencyCompleted = targetFund > 0 && currentCash >= targetFund;
-  const isNisaCompleted = nisaAnnualLimit > 0 && nisaTotal >= nisaAnnualLimit * 0.5; // 50% 이상
-  const isEightFigureCompleted = totalNetWorth >= 10000000; // 1,000만 엔
-  const isQuarterFireCompleted = fireTarget > 0 && totalNetWorth >= fireTarget * 0.25; // 25% 달성
+  // 4대 FIRE 퀘스트 업적 검증 및 진척률 연산
+  const emergencyProgress = targetFund > 0 ? Math.min(100, Math.round((currentCash / targetFund) * 100)) : 0;
+  const nisaTargetAmount = nisaAnnualLimit * 0.5;
+  const nisaProgress = nisaTargetAmount > 0 ? Math.min(100, Math.round((nisaTotal / nisaTargetAmount) * 100)) : 0;
+  const eightFigureProgress = Math.min(100, Number(((totalNetWorth / 10000000) * 100).toFixed(1)));
+  const quarterFireTargetAmount = fireTarget * 0.25;
+  const quarterFireProgress = quarterFireTargetAmount > 0 ? Math.min(100, Number(((totalNetWorth / quarterFireTargetAmount) * 100).toFixed(1))) : 0;
+
+  const isEmergencyCompleted = emergencyProgress >= 100;
+  const isNisaCompleted = nisaProgress >= 100;
+  const isEightFigureCompleted = eightFigureProgress >= 100;
+  const isQuarterFireCompleted = quarterFireProgress >= 100;
 
   const achievements = [
     {
       id: 'quest-emergency',
       icon: <ShieldCheck className="w-5 h-5" />,
       title: '3개월 비상금 완성',
-      desc: '3개월 치 필수 생활비 100% 모으기 퀘스트',
+      desc: `현금 ${isPrivate ? '••••' : formatJPY(currentCash)} / 필요 ${formatJPY(targetFund)}`,
+      progress: emergencyProgress,
       isUnlocked: isEmergencyCompleted,
       color: 'emerald',
     },
@@ -66,7 +77,8 @@ export default function FinancialLevelCard() {
       id: 'quest-nisa',
       icon: <Flame className="w-5 h-5" />,
       title: '신NISA 파이어니어',
-      desc: '신NISA 연간 한도 50% 이상 파이프라인 구축',
+      desc: `NISA ${isPrivate ? '••••' : formatJPY(nisaTotal)} / 한도50% ${formatJPY(nisaTargetAmount)}`,
+      progress: nisaProgress,
       isUnlocked: isNisaCompleted,
       color: 'purple',
     },
@@ -74,7 +86,8 @@ export default function FinancialLevelCard() {
       id: 'quest-10m',
       icon: <Award className="w-5 h-5" />,
       title: '8자리 자본가',
-      desc: '총자산 1,000만 엔 (10M JPY) 마일스톤 달성',
+      desc: `총자산 ${isPrivate ? '••••' : formatJPY(totalNetWorth)} / 목표 ￥10,000,000`,
+      progress: eightFigureProgress,
       isUnlocked: isEightFigureCompleted,
       color: 'cyan',
     },
@@ -82,7 +95,8 @@ export default function FinancialLevelCard() {
       id: 'quest-fire-quarter',
       icon: <Crown className="w-5 h-5" />,
       title: 'FIRE 쿼터 백',
-      desc: '은퇴 목표 자금 25% 돌파 게이밍 퀘스트',
+      desc: `총자산 ${isPrivate ? '••••' : formatJPY(totalNetWorth)} / 은퇴25% ${formatJPY(quarterFireTargetAmount)}`,
+      progress: quarterFireProgress,
       isUnlocked: isQuarterFireCompleted,
       color: 'amber',
     },
@@ -111,21 +125,37 @@ export default function FinancialLevelCard() {
 
           <div>
             <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-xs font-mono text-amber-400 font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">
+              <span className="text-xs font-mono text-amber-400 font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">
                 {isHydrated ? getTitle(currentLevel) : '로딩 중...'}
               </span>
             </div>
             <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
-              게이밍 재정 랭킹 & FIRE 퀘스트
-              <Tooltip content="총 자산 성과와 저축률에 따라 레벨(Lv.1~99)이 상승하며 4대 FIRE 퀘스트 업적 배지가 해금됩니다." />
+              게이밍 재정 랭킹 & FIRE 퀘스트 센터
+              <Tooltip content="총 자산 산출 공식: 기본 자산 레벨 (200만 엔당 +1Lv) + 저축률 보너스 (저축률 20%당 +1Lv)의 합산 레벨입니다." />
             </h3>
           </div>
         </div>
 
         <div className="text-right sm:border-l sm:border-zinc-800 sm:pl-6">
-          <span className="text-xs text-zinc-400 font-mono block">해금된 업적</span>
+          <span className="text-xs text-zinc-400 font-mono block">해금된 FIRE 퀘스트</span>
           <span className="text-xl font-extrabold text-emerald-400 font-mono">
             {unlockedCount} / {achievements.length} Badges
+          </span>
+        </div>
+      </div>
+
+      {/* Transparent Level Breakdown Formula Box */}
+      <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div className="flex items-center justify-between border-b sm:border-b-0 sm:border-r border-zinc-800/80 pb-2 sm:pb-0 sm:pr-4">
+          <span className="text-zinc-400">📊 기본 자산 레벨</span>
+          <span className="font-bold text-white font-mono">
+            Lv. {baseLevel} <span className="text-[10px] text-zinc-400 font-normal">(200만엔 구간당 +1)</span>
+          </span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-zinc-400">🔥 저축률 보너스 레벨</span>
+          <span className="font-bold text-amber-400 font-mono">
+            +Lv. {bonusLevel} <span className="text-[10px] text-zinc-400 font-normal">(저축률 {surplusRate.toFixed(1)}% / 20%당 +1)</span>
           </span>
         </div>
       </div>
@@ -135,7 +165,10 @@ export default function FinancialLevelCard() {
         <div className="flex justify-between text-xs font-mono">
           <span className="text-zinc-400 flex items-center gap-1">
             <Zap className="w-3.5 h-3.5 text-amber-400" />
-            다음 레벨(Lv.{currentLevel + 1})까지 경험치 (XP)
+            다음 레벨(Lv.{currentLevel + 1})까지 필요한 총자산:
+            <strong className="text-white font-mono">
+              {isPrivate ? '••••••••' : formatJPY(nextLevelRemainingJPY)} 남음
+            </strong>
           </span>
           <span className="text-amber-400 font-bold">{isHydrated ? currentXpProgress : 0}%</span>
         </div>
@@ -147,11 +180,11 @@ export default function FinancialLevelCard() {
         </div>
       </div>
 
-      {/* 4 FIRE Quest Badges */}
+      {/* 4 FIRE Quest Badges with Explicit Progress Bars */}
       <div className="space-y-3">
         <h4 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
           <Trophy className="w-4 h-4 text-amber-400" />
-          FIRE 4대 메인 퀘스트 업적 배지
+          FIRE 4대 메인 퀘스트 달성 현황
         </h4>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -161,7 +194,7 @@ export default function FinancialLevelCard() {
               className={`p-4 rounded-2xl border transition-all duration-300 ${
                 quest.isUnlocked
                   ? 'bg-zinc-900/90 border-emerald-500/40 shadow-lg shadow-emerald-950/40'
-                  : 'bg-zinc-950/40 border-zinc-800/60 opacity-50 grayscale'
+                  : 'bg-zinc-950/60 border-zinc-800/80'
               }`}
             >
               <div className="flex items-center justify-between mb-2">
@@ -169,23 +202,41 @@ export default function FinancialLevelCard() {
                   className={`p-2 rounded-xl ${
                     quest.isUnlocked
                       ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                      : 'bg-zinc-800 text-zinc-500'
+                      : 'bg-zinc-800 text-zinc-400'
                   }`}
                 >
                   {quest.icon}
                 </div>
                 <span
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
                     quest.isUnlocked
                       ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                      : 'bg-zinc-800 text-zinc-500'
+                      : 'bg-zinc-800 text-zinc-400'
                   }`}
                 >
-                  {quest.isUnlocked ? '완수! 🎖️' : '미완료 🔒'}
+                  {quest.isUnlocked ? (
+                    <>
+                      <CheckCircle2 className="w-3 h-3" /> 해금 완료
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-3 h-3" /> 잠김 ({quest.progress}%)
+                    </>
+                  )}
                 </span>
               </div>
               <h5 className="text-xs font-bold text-white mb-1">{quest.title}</h5>
-              <p className="text-[11px] text-zinc-400 leading-tight">{quest.desc}</p>
+              <p className="text-[11px] text-zinc-400 leading-tight mb-2.5">{quest.desc}</p>
+
+              {/* Progress bar */}
+              <div className="w-full bg-zinc-950 h-1.5 rounded-full overflow-hidden border border-zinc-800/80">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    quest.isUnlocked ? 'bg-emerald-400' : 'bg-amber-500/70'
+                  }`}
+                  style={{ width: `${quest.progress}%` }}
+                />
+              </div>
             </div>
           ))}
         </div>

@@ -170,7 +170,7 @@ export default function MonthlyBriefingCard() {
           </span>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl md:text-3xl font-extrabold text-white font-mono">
-              {fmtShort(momGrowth)}
+              {fmt(momGrowth)}
             </span>
             <span
               className={`text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 border ${
@@ -194,14 +194,15 @@ export default function MonthlyBriefingCard() {
 
         {/* Card 2: Current Net Surplus */}
         <div className="bg-zinc-950/70 border border-zinc-800/80 rounded-2xl p-5 space-y-2">
-          <span className="text-xs text-zinc-400 font-medium block">
-            이번 달 실수령 잉여 여력 (Net Surplus)
+          <span className="text-xs text-zinc-400 font-medium flex items-center">
+            이번 달 저축·투자 가능 잉여금 (Net Surplus)
+            <Tooltip content="이번 달 실수령 총수입에서 필수 및 변동 지출을 차감하고 남은 순저축·투자 가능 금액입니다." />
           </span>
           <div className="text-2xl md:text-3xl font-extrabold text-cyan-400 font-mono">
             {fmt(netSurplus)}
           </div>
           <p className="text-[11px] text-zinc-400 flex items-center gap-1">
-            월 수입 {fmtShort(totalIncome)} - 지출 {fmtShort(totalExpense)}
+            월 수입 {fmt(totalIncome)} - 월 지출 {fmt(totalExpense)}
           </p>
         </div>
 
