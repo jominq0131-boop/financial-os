@@ -183,12 +183,12 @@ export default function FireAdvisorCard() {
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
                 <Target className="w-3.5 h-3.5 text-cyan-400" />
-                추천 현금흐름 황금 비율 (Ideal Ratio)
+                현실적 권장 배분 가이드 (일본 거주 기준)
               </span>
-              <span className="text-[10px] text-zinc-400 font-mono">권장 가이드</span>
+              <span className="text-[10px] text-zinc-400 font-mono font-bold">월세 제외 순수 소비 기준</span>
             </div>
             <p className="text-xs text-zinc-300 leading-relaxed">
-              가장 안정적이고 빠른 FIRE 진입 비율: <strong className="text-rose-300">소비 35%</strong> : <strong className="text-indigo-300">안전저축 15%</strong> : <strong className="text-purple-300">성장투자 50%</strong>. 현재 소비 비중({expenseRate.toFixed(0)}%)을 조절해 보세요.
+              고정 주거비(월세/공과금)를 제외한 <strong className="text-amber-300">순수 변동 소비(식비·여가 등)를 20~25% 이하</strong>로 통제하고, 남은 금액을 <strong className="text-indigo-300">저축 15%</strong> + <strong className="text-purple-300">NISA 투자 40%+</strong>로 배치하는 것이 현실적인 FIRE 최단 경로입니다.
             </p>
           </div>
         </div>
