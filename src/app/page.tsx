@@ -27,6 +27,7 @@ import EmergencyFundCard from '@/components/dashboard/EmergencyFundCard';
 import FinancialLevelCard from '@/components/dashboard/FinancialLevelCard';
 import GoalTrackerSection from '@/components/dashboard/GoalTrackerSection';
 import SpendingTemperatureCard from '@/components/dashboard/SpendingTemperatureCard';
+import FireRoutineCard from '@/components/dashboard/FireRoutineCard';
 import Tooltip from '@/components/common/Tooltip';
 import { formatJPY, formatJPYShort } from '@/utils/currency';
 import { Sparkles, ShieldCheck, ArrowUpRight, TrendingUp } from 'lucide-react';
@@ -102,6 +103,9 @@ export default function Home() {
 
               {/* Goal Achievement & Pace Tracker */}
               <GoalTrackerSection />
+
+              {/* FIRE Habit Routine Checklist */}
+              <FireRoutineCard />
 
               {/* 4 KPI Cards */}
               <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -8,11 +8,11 @@ export interface MonthlySpendingRecord {
   식비: number;
   고정비: number;
   여가: number;
-  투자: number;
+  교통: number;
   기타: number;
 }
 
-export const SPENDING_CATEGORIES = ['주거', '식비', '고정비', '여가', '투자', '기타'] as const;
+export const SPENDING_CATEGORIES = ['주거', '식비', '고정비', '여가', '교통', '기타'] as const;
 export type SpendingCategory = typeof SPENDING_CATEGORIES[number];
 
 export const CATEGORY_META: Record<SpendingCategory, { emoji: string; color: string }> = {
@@ -20,7 +20,7 @@ export const CATEGORY_META: Record<SpendingCategory, { emoji: string; color: str
   식비: { emoji: '🍚', color: '#f59e0b' },
   고정비: { emoji: '⚡', color: '#8b5cf6' },
   여가: { emoji: '🎮', color: '#ec4899' },
-  투자: { emoji: '📈', color: '#22c55e' },
+  교통: { emoji: '🚃', color: '#06b6d4' },
   기타: { emoji: '📦', color: '#71717a' },
 };
 

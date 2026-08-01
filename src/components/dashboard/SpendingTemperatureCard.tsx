@@ -25,7 +25,7 @@ const EMPTY_INPUTS: CategoryInputs = {
   식비: '',
   고정비: '',
   여가: '',
-  투자: '',
+  교통: '',
   기타: '',
 };
 
@@ -94,7 +94,7 @@ export default function SpendingTemperatureCard() {
         식비: String(rec.식비 || ''),
         고정비: String(rec.고정비 || ''),
         여가: String(rec.여가 || ''),
-        투자: String(rec.투자 || ''),
+        교통: String(rec.교통 || ''),
         기타: String(rec.기타 || ''),
       });
     } else {
@@ -109,7 +109,7 @@ export default function SpendingTemperatureCard() {
       식비: Number(inputs.식비) || 0,
       고정비: Number(inputs.고정비) || 0,
       여가: Number(inputs.여가) || 0,
-      투자: Number(inputs.투자) || 0,
+      교통: Number(inputs.교통) || 0,
       기타: Number(inputs.기타) || 0,
     });
     setShowForm(false);
