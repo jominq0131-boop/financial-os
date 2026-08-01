@@ -42,20 +42,19 @@ export default function MonthlyBriefingCard() {
   const netSurplus = getNetSurplus();
   const surplusRate = totalIncome > 0 ? Number(((netSurplus / totalIncome) * 100).toFixed(1)) : 0;
 
-  // 전월 스냅샷 비교 (현재 선택 정산월보다 이전인 정산 내역 중 가장 최신 항목 탐색)
-  const targetMonth = selectedMonth || todayDate;
-  const priorSnapshots = snapshots.filter((s) => s.date < targetMonth);
-  const prevMonthSnapshot =
-    priorSnapshots.length > 0
-      ? priorSnapshots[priorSnapshots.length - 1]
-      : snapshots.length > 1
-      ? snapshots[snapshots.length - 2]
-      : null;
+  // 스냅샷 목록 날짜 오름차순 정렬 후 최신 마감(S_latest)과 직전 마감(S_prev) 비교
+  const sortedSnapshots = [...snapshots].sort((a, b) => a.date.localeCompare(b.date));
+  const latestSnapshot = sortedSnapshots.length > 0 ? sortedSnapshots[sortedSnapshots.length - 1] : null;
+  const prevSnapshot = sortedSnapshots.length > 1 ? sortedSnapshots[sortedSnapshots.length - 2] : null;
 
-  const momGrowth = prevMonthSnapshot ? currentNetWorth - prevMonthSnapshot.netWorth : 0;
+  // 마감된 최신 자산 평가액 vs 직전 마감 평가액 비교
+  const activeNetWorth = latestSnapshot ? latestSnapshot.netWorth : currentNetWorth;
+  const benchmarkNetWorth = prevSnapshot ? prevSnapshot.netWorth : 0;
+
+  const momGrowth = prevSnapshot ? activeNetWorth - benchmarkNetWorth : 0;
   const momPercent =
-    prevMonthSnapshot && prevMonthSnapshot.netWorth > 0
-      ? Number(((momGrowth / prevMonthSnapshot.netWorth) * 100).toFixed(1))
+    prevSnapshot && benchmarkNetWorth > 0
+      ? Number(((momGrowth / benchmarkNetWorth) * 100).toFixed(1))
       : 0;
 
   const isSurplus = momGrowth >= 0;
@@ -185,7 +184,11 @@ export default function MonthlyBriefingCard() {
             </span>
           </div>
           <p className="text-[11px] text-zinc-500">
-            {prevMonthSnapshot ? `직전 정산(${prevMonthSnapshot.date}) 기준 비교` : '최초 등록 정산 상태'}
+            {latestSnapshot && prevSnapshot
+              ? `최신 정산(${latestSnapshot.date}) vs 직전 정산(${prevSnapshot.date}) 기준 비교`
+              : latestSnapshot
+              ? `최신 정산(${latestSnapshot.date}) 마감 상태`
+              : '최초 등록 정산 상태'}
           </p>
         </div>
 

@@ -11,7 +11,8 @@ import EditAssetModal from './EditAssetModal';
 import { Asset } from '@/types/asset';
 
 export default function AssetSection() {
-  const { assets, isPrivate, togglePrivacy, deleteAsset } = useAssetStore();
+  const { assets, isPrivate, togglePrivacy, deleteAsset, getTotalNetWorth } = useAssetStore();
+  const totalNetWorth = getTotalNetWorth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<AssetCategory | 'ALL'>('ALL');
@@ -60,6 +61,22 @@ export default function AssetSection() {
             <span>자산 추가</span>
           </button>
         </div>
+      </div>
+
+      {/* Total Accounts Net Worth Banner */}
+      <div className="bg-zinc-900/60 border border-zinc-800/90 rounded-2xl p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 backdrop-blur-xl">
+        <div>
+          <span className="text-xs text-zinc-400 font-mono block mb-0.5">
+            전 계좌 통합 포트폴리오 총자산 (Total Assets)
+          </span>
+          <div className="text-2xl font-extrabold text-emerald-400 font-mono">
+            {formatAmount(totalNetWorth)}
+          </div>
+        </div>
+        <p className="text-xs text-zinc-400 sm:text-right">
+          현금 + 주식 + 신NISA + iDeCo + 부동산 <br />
+          <span className="text-emerald-400 font-semibold font-mono">총 {assets.length}개 전체 계좌 항목 합계</span>
+        </p>
       </div>
 
       {/* Category Filters */}

@@ -104,18 +104,18 @@ export default function Home() {
                 <div className="bg-zinc-900/70 border border-zinc-800/90 rounded-3xl p-5 backdrop-blur-xl">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-medium text-zinc-400 flex items-center">
-                      총 순자산 (Net Worth)
-                      <Tooltip content="등록된 현금, 주식, 연금, 부동산 등 모든 엔화(JPY ￥) 자산 계좌의 실시간 합계액입니다." />
+                      총자산 (전 계좌 합계)
+                      <Tooltip content="등록된 현금, 주식, 신NISA, iDeCo, 부동산 등 모든 계좌(JPY ￥) 자산의 실시간 전체 합계액입니다." />
                     </span>
                     <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                      실시간
+                      전 계좌 합산
                     </span>
                   </div>
                   <div className="text-2xl font-extrabold tracking-tight text-white font-mono">
                     {fmt(totalNetWorth)}
                   </div>
                   <p className="text-[11px] text-zinc-400 mt-1">
-                    {isPrivate ? '' : `≈ ${fmtShort(totalNetWorth)} — 전체 계좌 합산`}
+                    {isPrivate ? '' : `≈ ${fmtShort(totalNetWorth)} (현금+주식+NISA+연금+부동산)`}
                   </p>
                 </div>
 
