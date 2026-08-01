@@ -43,7 +43,7 @@ export default function SnapshotGrowthChart() {
       netWorth: currentNetWorth,
       totalCash: cashTotal,
       totalInvestments: investmentTotal,
-      note: noteInput || '정기 월간 순자산 스냅샷',
+      note: noteInput || '정기 월간 총자산 스냅샷',
     });
     setNoteInput('');
     setShowNoteInput(false);
@@ -82,11 +82,11 @@ export default function SnapshotGrowthChart() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
-            📸 월간 순자산 스냅샷 & 성장 트래커
-            <Tooltip content="매월 자산 현황을 스냅샷으로 기록하여 순자산 월별 성장 추이와 증감액(MoM)을 추적합니다." />
+            📸 월간 총자산 스냅샷 & 성장 트래커
+            <Tooltip content="매월 자산 현황을 스냅샷으로 기록하여 총자산 월별 성장 추이와 증감액(MoM)을 추적합니다." />
           </h2>
           <p className="text-xs text-zinc-400 mt-1">
-            월별 순자산 추이 및 전월 대비 증감 시각화
+            월별 총자산 추이 및 전월 대비 증감 시각화
           </p>
         </div>
 
@@ -133,7 +133,7 @@ export default function SnapshotGrowthChart() {
       {/* KPI Growth Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         <div className="bg-zinc-800/40 border border-zinc-800 rounded-2xl p-4">
-          <span className="text-xs text-zinc-400 block mb-1">현재 순자산</span>
+          <span className="text-xs text-zinc-400 block mb-1">현재 총자산</span>
           <span className="text-lg font-bold text-white font-mono">
             {isPrivate ? '••••••••' : formatJPYShort(currentNetWorth)}
           </span>
@@ -187,7 +187,7 @@ export default function SnapshotGrowthChart() {
                 }}
                 formatter={(value: any) => [
                   isPrivate ? '••••••••' : formatJPY(Number(value)),
-                  '순자산',
+                  '총자산',
                 ]}
               />
               <Area

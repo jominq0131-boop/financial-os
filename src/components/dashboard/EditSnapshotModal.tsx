@@ -57,7 +57,7 @@ export default function EditSnapshotModal({ isOpen, onClose, snapshot }: EditSna
         </button>
 
         <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-          ✏️ 월간 순자산 스냅샷 수정
+          ✏️ 월간 총자산 스냅샷 수정
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -74,7 +74,7 @@ export default function EditSnapshotModal({ isOpen, onClose, snapshot }: EditSna
           </div>
 
           <div>
-            <label className="block text-xs text-zinc-400 mb-1">순자산 총액 (엔 ￥)</label>
+            <label className="block text-xs text-zinc-400 mb-1">총자산 금액 (엔 ￥)</label>
             <input
               type="number"
               value={netWorth}

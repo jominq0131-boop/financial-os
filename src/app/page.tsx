@@ -100,12 +100,12 @@ export default function Home() {
 
               {/* 4 KPI Cards */}
               <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Net Worth */}
+                {/* Net Worth / Total Assets */}
                 <div className="bg-zinc-900/70 border border-zinc-800/90 rounded-3xl p-5 backdrop-blur-xl">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-medium text-zinc-400 flex items-center">
-                      총자산 (전 계좌 합계)
-                      <Tooltip content="등록된 현금, 주식, 신NISA, iDeCo, 부동산 등 모든 계좌(JPY ￥) 자산의 실시간 전체 합계액입니다." />
+                      현재 총자산 (Total Assets)
+                      <Tooltip content="등록된 현금, 주식, 신NISA, iDeCo, 부동산 등 모든 계좌(JPY ￥) 자산의 전체 합계액입니다." />
                     </span>
                     <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                       전 계좌 합산
@@ -124,7 +124,7 @@ export default function Home() {
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-medium text-zinc-400 flex items-center">
                       FIRE 은퇴 진척도
-                      <Tooltip content="설정된 FIRE 은퇴 목표 자금 대비 현재 총 순자산의 달성 비율입니다." />
+                      <Tooltip content="설정된 FIRE 은퇴 목표 자금 대비 현재 총자산의 달성 비율입니다." />
                     </span>
                     <span className="text-xs font-bold text-amber-400 font-mono">
                       {isHydrated ? fireProgress : 0}%

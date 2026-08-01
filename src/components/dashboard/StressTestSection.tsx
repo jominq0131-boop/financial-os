@@ -147,7 +147,7 @@ export default function StressTestSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Adjusted Net Worth */}
           <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-4">
-            <span className="text-xs text-zinc-400 block mb-1">위기 발생 후 변동 순자산</span>
+            <span className="text-xs text-zinc-400 block mb-1">위기 발생 후 변동 총자산</span>
             <div className="text-2xl font-extrabold text-white font-mono">
               {formatVal(result.adjustedNetWorth)}
             </div>

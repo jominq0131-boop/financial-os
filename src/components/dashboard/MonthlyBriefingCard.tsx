@@ -74,7 +74,7 @@ export default function MonthlyBriefingCard() {
       type: 'ASSET',
       action: 'ADD',
       title: `📸 ${targetMonth} 재정 정산 마감`,
-      detail: `최종 순자산: ￥${currentNetWorth.toLocaleString()} (전월 대비 ${momGrowth >= 0 ? '+' : ''}￥${momGrowth.toLocaleString()})`,
+      detail: `최종 총자산: ￥${currentNetWorth.toLocaleString()} (전월 대비 ${momGrowth >= 0 ? '+' : ''}￥${momGrowth.toLocaleString()})`,
     });
 
     setIsCapturedToday(true);
@@ -166,7 +166,7 @@ export default function MonthlyBriefingCard() {
         {/* Card 1: MoM Growth */}
         <div className="bg-zinc-950/70 border border-zinc-800/80 rounded-2xl p-5 space-y-2">
           <span className="text-xs text-zinc-400 font-medium block">
-            전월 대비 순자산 변동 (MoM)
+            전월 대비 총자산 변동 (MoM)
           </span>
           <div className="flex items-baseline gap-2">
             <span className="text-2xl md:text-3xl font-extrabold text-white font-mono">

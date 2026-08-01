@@ -27,8 +27,8 @@ const TAB_TITLES: Record<NavTab, { title: string; subtitle: string }> = {
     subtitle: '신NISA 한도, 세후 실수익 시뮬레이션, 생애 주기 마일스톤',
   },
   security: {
-    title: '성장이력 & 데이터 보안 관제',
-    subtitle: '월간 순자산 스냅샷, 위기 테스트, 데이터 백업/복원',
+    title: '스냅샷 & 로컬 보안 (Snapshots & Security)',
+    subtitle: '월간 총자산 스냅샷, 위기 테스트, 데이터 백업/복원',
   },
 };
 
@@ -68,7 +68,7 @@ export default function Header({
       {/* Right Stats & Quick Actions */}
       <div className="flex items-center gap-3">
         <div className="text-right">
-          <span className="text-[10px] text-zinc-400 font-mono block">실시간 순자산</span>
+          <span className="text-[10px] text-zinc-400 font-mono block">현재 총자산</span>
           <span className="text-sm font-bold text-emerald-400 font-mono">
             {!isHydrated ? '￥ 0' : isPrivate ? '￥ ••••••••' : formatJPYShort(currentNetWorth)}
           </span>

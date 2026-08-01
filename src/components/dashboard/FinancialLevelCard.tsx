@@ -74,7 +74,7 @@ export default function FinancialLevelCard() {
       id: 'quest-10m',
       icon: <Award className="w-5 h-5" />,
       title: '8자리 자본가',
-      desc: '순자산 1,000만 엔 (10M JPY) 마일스톤 달성',
+      desc: '총자산 1,000만 엔 (10M JPY) 마일스톤 달성',
       isUnlocked: isEightFigureCompleted,
       color: 'cyan',
     },
