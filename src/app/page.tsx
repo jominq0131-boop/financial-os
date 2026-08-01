@@ -92,22 +92,10 @@ export default function Home() {
 
         {/* View Content Container */}
         <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto space-y-8">
-          {/* TAB 1: 🚀 관제 요약 (Overview) */}
+          {/* TAB 1: 🚀 관제 요약 (Overview) - 100% 시각화 대시보드 */}
           {activeTab === 'overview' && (
             <div className="space-y-8 animate-fade-in">
-              {/* Executive Monthly Performance Briefing Center */}
-              <MonthlyBriefingCard />
-
-              {/* Gamified FIRE Rank & Quest Badges */}
-              <FinancialLevelCard />
-
-              {/* Goal Achievement & Pace Tracker */}
-              <GoalTrackerSection />
-
-              {/* FIRE Habit Routine Checklist */}
-              <FireRoutineCard />
-
-              {/* 4 KPI Cards */}
+              {/* 1. 4대 핵심 KPI 관제 카운터 */}
               <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Net Worth / Total Assets */}
                 <div className="bg-zinc-900/70 border border-zinc-800/90 rounded-3xl p-5 backdrop-blur-xl">
@@ -193,7 +181,16 @@ export default function Home() {
                 </div>
               </section>
 
-              {/* Emergency Fund Card & Forecast Summary */}
+              {/* 2. Goal Achievement & Pace Tracker */}
+              <GoalTrackerSection />
+
+              {/* 3. 50 Year Forecast Chart (Future Prediction) */}
+              <ForecastChart />
+
+              {/* 4. Monthly Asset Snapshot Growth Chart (Past & Present Flow) */}
+              <SnapshotGrowthChart />
+
+              {/* 5. Emergency Fund & NISA Tracker Cards */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-6">
                   <EmergencyFundCard />
@@ -203,14 +200,15 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* 50 Year Forecast Chart */}
-              <ForecastChart />
+              {/* 6. Gamified FIRE Rank & Quest Badges */}
+              <FinancialLevelCard />
             </div>
           )}
 
           {/* TAB 2: 💼 자산 & 현금흐름 (Assets & Cashflow) */}
           {activeTab === 'assets' && (
             <div className="space-y-8 animate-fade-in">
+              <MonthlyBriefingCard />
               <AssetSection />
               <RunwaySection />
               <SpendingTemperatureCard />
@@ -221,6 +219,7 @@ export default function Home() {
           {/* TAB 3: 🎯 세제 & FIRE 플래너 (Intelligence & Milestones) */}
           {activeTab === 'intelligence' && (
             <div className="space-y-8 animate-fade-in">
+              <FireRoutineCard />
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-6 space-y-8">
                   <TaxReturnSection />
