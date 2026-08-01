@@ -9,6 +9,30 @@ import Tooltip from '@/components/common/Tooltip';
 import { formatJPY } from '@/utils/currency';
 import { ShieldCheck, Award, Flame, Zap, Trophy, Crown, CheckCircle2, Lock } from 'lucide-react';
 
+// Progressive Level Thresholds Table (엔화 JPY 기준 레벨 구간)
+const LEVEL_THRESHOLDS = [
+  { level: 1, amount: 0, title: '🌱 초보 탐험가 (Financial Novice)' },
+  { level: 2, amount: 100000, title: '🌱 저축 입문자 (Savings Starter)' },
+  { level: 3, amount: 300000, title: '☘️ 시드머니 탐험가 (Seed Explorer)' },
+  { level: 4, amount: 500000, title: '☘️ 50만 자본 입문자 (Half-Millioneer)' },
+  { level: 5, amount: 800000, title: '🛡️ 비상금 수호자 (Safety Guardian)' },
+  { level: 6, amount: 1200000, title: '🚀 100만 자본가 (Millionaire Novice)' },
+  { level: 7, amount: 1700000, title: '🚀 자산 형성가 (Asset Builder)' },
+  { level: 8, amount: 2300000, title: '💎 엘리트 자본가 (Elite Builder)' },
+  { level: 9, amount: 3000000, title: '💎 300만 자산가 (3M Asset Master)' },
+  { level: 10, amount: 4000000, title: '⚡ 자본 아키텍트 (Capital Architect)' },
+  { level: 11, amount: 5500000, title: '⚡ 500만 자산가 (5M Asset Master)' },
+  { level: 12, amount: 7000000, title: '👑 700만 자본가 (7M Tycoon)' },
+  { level: 13, amount: 8500000, title: '👑 은퇴 준비생 (Pre-FIRE Pioneer)' },
+  { level: 14, amount: 10000000, title: '🏆 8자리 자본가 (10M Capitalist)' },
+  { level: 15, amount: 12500000, title: '🏆 FIRE 쿼터백 (FIRE Quarter Master)' },
+  { level: 16, amount: 15000000, title: '👑 파이어 마스터 (FIRE Master)' },
+  { level: 17, amount: 18000000, title: '👑 NISA 완주자 (NISA Lifetime Master)' },
+  { level: 18, amount: 22000000, title: '⚡ 타이쿤 커맨더 (Tycoon Commander)' },
+  { level: 19, amount: 26000000, title: '👑 FIRE 파이오니어 (FIRE Pioneer)' },
+  { level: 20, amount: 30000000, title: '👑 파이어 커맨더 (FIRE Commander)' },
+];
+
 export default function FinancialLevelCard() {
   const isHydrated = useHydrated();
   const { getTotalNetWorth, getNisaTotal, isPrivate } = useAssetStore();
@@ -25,30 +49,38 @@ export default function FinancialLevelCard() {
 
   const nisaTotal = getNisaTotal();
 
-  // 게이밍 레벨 및 경험치 연산 (Lv 1 ~ 99)
-  // Base calculation: 1 Level per 2M JPY net worth + bonus level from savings rate
   const totalIncome = getTotalIncome();
   const netSurplus = getNetSurplus();
   const surplusRate = totalIncome > 0 ? (netSurplus / totalIncome) * 100 : 0;
 
-  const baseLevel = Math.max(1, Math.floor(totalNetWorth / 2000000) + 1);
-  const bonusLevel = Math.floor(surplusRate / 20); // 20% 저축률당 +1 레벨
-  const currentLevel = Math.min(99, baseLevel + bonusLevel);
+  // Find Current Base Level from Assets
+  let baseLevelIndex = 0;
+  for (let i = 0; i < LEVEL_THRESHOLDS.length; i++) {
+    if (totalNetWorth >= LEVEL_THRESHOLDS[i].amount) {
+      baseLevelIndex = i;
+    } else {
+      break;
+    }
+  }
 
-  // 다음 레벨 구간 계산
-  const nextLevelAssetTarget = baseLevel * 2000000;
-  const nextLevelRemainingJPY = Math.max(0, nextLevelAssetTarget - totalNetWorth);
-  const currentXpProgress = Math.min(100, Math.floor(((totalNetWorth % 2000000) / 2000000) * 100));
-
-  // 칭호 결정
-  const getTitle = (level: number) => {
-    if (level >= 50) return '👑 파이어 커맨더 (FIRE Commander)';
-    if (level >= 30) return '⚡ 타이쿤 자본가 (Tycoon Capitalist)';
-    if (level >= 20) return '💎 엘리트 아키텍트 (Elite Architect)';
-    if (level >= 10) return '🚀 에이스 자본가 (Ace Capitalist)';
-    if (level >= 5) return '🛡️ 비상금 수호자 (Safety Guardian)';
-    return '🌱 초보 탐험가 (Financial Novice)';
+  const baseLevelObj = LEVEL_THRESHOLDS[baseLevelIndex];
+  const nextLevelObj = LEVEL_THRESHOLDS[baseLevelIndex + 1] || {
+    level: baseLevelObj.level + 1,
+    amount: baseLevelObj.amount + 5000000,
+    title: '👑 파이어 마스터 (FIRE Master)',
   };
+
+  const bonusLevel = Math.floor(surplusRate / 25); // 25% 저축률당 +1 레벨
+  const currentLevel = Math.min(99, baseLevelObj.level + bonusLevel);
+
+  // Next Level Progress Calculations
+  const currentLevelFloorAmount = baseLevelObj.amount;
+  const nextLevelTargetAmount = nextLevelObj.amount;
+  const levelRange = Math.max(1, nextLevelTargetAmount - currentLevelFloorAmount);
+  const currentProgressInLevel = Math.max(0, totalNetWorth - currentLevelFloorAmount);
+  const xpPercent = Math.min(100, Math.floor((currentProgressInLevel / levelRange) * 100));
+
+  const remainingForNextLevel = Math.max(0, nextLevelTargetAmount - totalNetWorth);
 
   // 4대 FIRE 퀘스트 업적 검증 및 진척률 연산
   const emergencyProgress = targetFund > 0 ? Math.min(100, Math.round((currentCash / targetFund) * 100)) : 0;
@@ -71,7 +103,6 @@ export default function FinancialLevelCard() {
       desc: `현금 ${isPrivate ? '••••' : formatJPY(currentCash)} / 필요 ${formatJPY(targetFund)}`,
       progress: emergencyProgress,
       isUnlocked: isEmergencyCompleted,
-      color: 'emerald',
     },
     {
       id: 'quest-nisa',
@@ -80,7 +111,6 @@ export default function FinancialLevelCard() {
       desc: `NISA ${isPrivate ? '••••' : formatJPY(nisaTotal)} / 한도50% ${formatJPY(nisaTargetAmount)}`,
       progress: nisaProgress,
       isUnlocked: isNisaCompleted,
-      color: 'purple',
     },
     {
       id: 'quest-10m',
@@ -89,7 +119,6 @@ export default function FinancialLevelCard() {
       desc: `총자산 ${isPrivate ? '••••' : formatJPY(totalNetWorth)} / 목표 ￥10,000,000`,
       progress: eightFigureProgress,
       isUnlocked: isEightFigureCompleted,
-      color: 'cyan',
     },
     {
       id: 'quest-fire-quarter',
@@ -98,7 +127,6 @@ export default function FinancialLevelCard() {
       desc: `총자산 ${isPrivate ? '••••' : formatJPY(totalNetWorth)} / 은퇴25% ${formatJPY(quarterFireTargetAmount)}`,
       progress: quarterFireProgress,
       isUnlocked: isQuarterFireCompleted,
-      color: 'amber',
     },
   ];
 
@@ -126,12 +154,12 @@ export default function FinancialLevelCard() {
           <div>
             <div className="flex items-center gap-2 mb-0.5">
               <span className="text-xs font-mono text-amber-400 font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">
-                {isHydrated ? getTitle(currentLevel) : '로딩 중...'}
+                {isHydrated ? baseLevelObj.title : '로딩 중...'}
               </span>
             </div>
             <h3 className="text-lg font-bold text-white flex items-center gap-1.5">
               게이밍 재정 랭킹 & FIRE 퀘스트 센터
-              <Tooltip content="총 자산 산출 공식: 기본 자산 레벨 (200만 엔당 +1Lv) + 저축률 보너스 (저축률 20%당 +1Lv)의 합산 레벨입니다." />
+              <Tooltip content="점진적 자산 레벨 곡선: 초반 10만~20만엔 단위의 성취감 있는 레벨업 구간과, 저축률 보너스(+1Lv)가 연동된 게이밍 성장 시스템입니다." />
             </h3>
           </div>
         </div>
@@ -147,35 +175,36 @@ export default function FinancialLevelCard() {
       {/* Transparent Level Breakdown Formula Box */}
       <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
         <div className="flex items-center justify-between border-b sm:border-b-0 sm:border-r border-zinc-800/80 pb-2 sm:pb-0 sm:pr-4">
-          <span className="text-zinc-400">📊 기본 자산 레벨</span>
+          <span className="text-zinc-400">📊 자산 형성 레벨</span>
           <span className="font-bold text-white font-mono">
-            Lv. {baseLevel} <span className="text-[10px] text-zinc-400 font-normal">(200만엔 구간당 +1)</span>
+            Lv. {baseLevelObj.level} <span className="text-[10px] text-zinc-400 font-normal">({formatJPY(baseLevelObj.amount)} 달성)</span>
           </span>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-zinc-400">🔥 저축률 보너스 레벨</span>
           <span className="font-bold text-amber-400 font-mono">
-            +Lv. {bonusLevel} <span className="text-[10px] text-zinc-400 font-normal">(저축률 {surplusRate.toFixed(1)}% / 20%당 +1)</span>
+            +Lv. {bonusLevel} <span className="text-[10px] text-zinc-400 font-normal">(저축률 {surplusRate.toFixed(1)}% / 25%당 +1)</span>
           </span>
         </div>
       </div>
 
-      {/* XP Progress Bar */}
+      {/* XP Progress Bar to Next Level */}
       <div className="space-y-2">
-        <div className="flex justify-between text-xs font-mono">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono gap-1">
           <span className="text-zinc-400 flex items-center gap-1">
             <Zap className="w-3.5 h-3.5 text-amber-400" />
-            다음 레벨(Lv.{currentLevel + 1})까지 필요한 총자산:
-            <strong className="text-white font-mono">
-              {isPrivate ? '••••••••' : formatJPY(nextLevelRemainingJPY)} 남음
-            </strong>
+            다음 <strong>Lv.{nextLevelObj.level} ({formatJPY(nextLevelObj.amount)})</strong> 달성까지:
           </span>
-          <span className="text-amber-400 font-bold">{isHydrated ? currentXpProgress : 0}%</span>
+          <span className="text-emerald-400 font-bold">
+            {remainingForNextLevel === 0
+              ? '다음 레벨 달성! 🎉'
+              : `￥${remainingForNextLevel.toLocaleString()} 남음 (${xpPercent}%)`}
+          </span>
         </div>
-        <div className="w-full bg-zinc-950 h-3 rounded-full overflow-hidden border border-zinc-800/80 p-0.5">
+        <div className="w-full bg-zinc-950 h-3.5 rounded-full overflow-hidden border border-zinc-800/80 p-0.5">
           <div
             className="bg-gradient-to-r from-amber-500 via-emerald-400 to-teal-300 h-full rounded-full transition-all duration-500 shadow-md"
-            style={{ width: `${isHydrated ? currentXpProgress : 0}%` }}
+            style={{ width: `${isHydrated ? xpPercent : 0}%` }}
           />
         </div>
       </div>
@@ -216,11 +245,11 @@ export default function FinancialLevelCard() {
                 >
                   {quest.isUnlocked ? (
                     <>
-                      <CheckCircle2 className="w-3 h-3" /> 해금 완료
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400" /> 해금 완료
                     </>
                   ) : (
                     <>
-                      <Lock className="w-3 h-3" /> 잠김 ({quest.progress}%)
+                      <Lock className="w-3 h-3" /> {quest.progress}%
                     </>
                   )}
                 </span>
