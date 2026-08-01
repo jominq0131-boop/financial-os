@@ -1,12 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAssetStore } from '@/store/useAssetStore';
 import { useCashflowStore } from '@/store/useCashflowStore';
 import { useSettingsStore } from '@/store/useSettingsStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import Tooltip from '@/components/common/Tooltip';
-import { formatJPY } from '@/utils/currency';
+import ConfettiOverlay from '@/components/common/ConfettiOverlay';
+import { formatJPY, formatJPYShort } from '@/utils/currency';
 import { ShieldCheck, Award, Flame, Zap, Trophy, Crown, CheckCircle2, Lock } from 'lucide-react';
 
 // Progressive Level Thresholds Table (엔화 JPY 기준 레벨 구간)
@@ -34,6 +35,9 @@ const LEVEL_THRESHOLDS = [
 ];
 
 export default function FinancialLevelCard() {
+  const [confettiMsg, setConfettiMsg] = useState('');
+  const [showConfetti, setShowConfetti] = useState(false);
+  const prevUnlockedRef = useRef<number>(0);
   const isHydrated = useHydrated();
   const { getTotalNetWorth, getNisaTotal, isPrivate } = useAssetStore();
   const { getTotalIncome, getNetSurplus, getEssentialExpense } = useCashflowStore();
@@ -108,7 +112,7 @@ export default function FinancialLevelCard() {
       id: 'quest-nisa',
       icon: <Flame className="w-5 h-5" />,
       title: '신NISA 파이어니어',
-      desc: `NISA ${isPrivate ? '••••' : formatJPY(nisaTotal)} / 한도50% ${formatJPY(nisaTargetAmount)}`,
+      desc: `NISA ${isPrivate ? '••••' : formatJPY(nisaTotal)} / 한도50% ${formatJPYShort(nisaTargetAmount)}`,
       progress: nisaProgress,
       isUnlocked: isNisaCompleted,
     },
@@ -124,7 +128,7 @@ export default function FinancialLevelCard() {
       id: 'quest-fire-quarter',
       icon: <Crown className="w-5 h-5" />,
       title: 'FIRE 쿼터 백',
-      desc: `총자산 ${isPrivate ? '••••' : formatJPY(totalNetWorth)} / 은퇴25% ${formatJPY(quarterFireTargetAmount)}`,
+      desc: `총자산 ${isPrivate ? '••••' : formatJPY(totalNetWorth)} / 은퇴25% ${formatJPYShort(quarterFireTargetAmount)}`,
       progress: quarterFireProgress,
       isUnlocked: isQuarterFireCompleted,
     },
@@ -132,7 +136,25 @@ export default function FinancialLevelCard() {
 
   const unlockedCount = achievements.filter((a) => a.isUnlocked).length;
 
+  // Detect newly unlocked quests and trigger confetti
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (unlockedCount > prevUnlockedRef.current && prevUnlockedRef.current > 0) {
+      const newlyUnlocked = achievements.find((a, i) => a.isUnlocked && !prevUnlockedRef.current);
+      setConfettiMsg('🏆 퀘스트 달성! 축하합니다!');
+      setShowConfetti(true);
+    }
+    prevUnlockedRef.current = unlockedCount;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unlockedCount, isHydrated]);
+
   return (
+    <>
+    <ConfettiOverlay
+      isVisible={showConfetti}
+      message={confettiMsg}
+      onComplete={() => setShowConfetti(false)}
+    />
     <div className="bg-gradient-to-br from-zinc-900 via-zinc-900/90 to-zinc-950 border border-zinc-800/90 rounded-3xl p-6 md:p-8 backdrop-blur-xl shadow-2xl space-y-6">
       {/* Header Level & Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800/80 pb-5">
@@ -271,5 +293,6 @@ export default function FinancialLevelCard() {
         </div>
       </div>
     </div>
+    </>
   );
 }

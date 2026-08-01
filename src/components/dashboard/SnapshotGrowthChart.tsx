@@ -18,6 +18,7 @@ import {
 } from 'recharts';
 import { Camera, TrendingUp, TrendingDown, Trash2, Calendar, Edit3 } from 'lucide-react';
 import EditSnapshotModal from './EditSnapshotModal';
+import ConfettiOverlay from '@/components/common/ConfettiOverlay';
 
 export default function SnapshotGrowthChart() {
   const isHydrated = useHydrated();
@@ -31,6 +32,7 @@ export default function SnapshotGrowthChart() {
   const [editingSnapshot, setEditingSnapshot] = useState<NetWorthSnapshot | null>(null);
 
   const currentNetWorth = getTotalNetWorth();
+  const [showConfetti, setShowConfetti] = useState(false);
   const cashTotal = assets
     .filter((a) => a.category === 'CASH')
     .reduce((sum, a) => sum + a.amount, 0);
@@ -47,6 +49,7 @@ export default function SnapshotGrowthChart() {
     });
     setNoteInput('');
     setShowNoteInput(false);
+    setShowConfetti(true);
   };
 
   // 스냅샷 데이터 가공 (전월 대비 증감 연산)
@@ -77,6 +80,12 @@ export default function SnapshotGrowthChart() {
   };
 
   return (
+    <>
+    <ConfettiOverlay
+      isVisible={showConfetti}
+      message="📸 스냅샷 저장 완료! 월간 총자산 기록!"
+      onComplete={() => setShowConfetti(false)}
+    />
     <div className="bg-zinc-900/70 border border-zinc-800/90 rounded-3xl p-6 backdrop-blur-xl hover:border-zinc-700 transition space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -256,5 +265,6 @@ export default function SnapshotGrowthChart() {
         snapshot={editingSnapshot}
       />
     </div>
+    </>
   );
 }
