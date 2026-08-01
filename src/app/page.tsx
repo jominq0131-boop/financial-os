@@ -223,7 +223,6 @@ export default function Home() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div className="lg:col-span-6 space-y-8">
                   <TaxReturnSection />
-                  <NisaTrackerCard />
                 </div>
                 <div className="lg:col-span-6 space-y-8">
                   <SavingsPlannerSection />

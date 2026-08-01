@@ -239,8 +239,8 @@ export default function SpendingTemperatureCard() {
           <div className="flex items-center justify-between text-xs text-zinc-400 font-mono px-1">
             <span>카테고리</span>
             <div className="flex gap-8">
-              <span>{prev ? `${prev.month.replace('-', '년 ')}월 (전월)` : '전월 없음'}</span>
-              <span className="text-white font-bold">{current.month.replace('-', '년 ')}월 (이번달)</span>
+              <span>{prev ? `${prev.month.replace('-', '년 ')}월` : '이전 기록 없음'}</span>
+              <span className="text-white font-bold">{current.month.replace('-', '년 ')}월 (기준)</span>
               <span className="w-20 text-right">증감 / 상태</span>
             </div>
           </div>
@@ -312,7 +312,7 @@ export default function SpendingTemperatureCard() {
             <div className="flex justify-between items-center text-sm">
               <span className="text-zinc-400 font-medium flex items-center gap-1.5">
                 <Thermometer className="w-4 h-4 text-rose-400" />
-                이번 달 총 실제 지출
+                {current.month.replace('-', '년 ')}월 총 실제 지출
               </span>
               <span className="font-extrabold text-white font-mono text-lg">{formatJPY(currentTotal)}</span>
             </div>
@@ -348,7 +348,7 @@ export default function SpendingTemperatureCard() {
             {/* Prev month total comparison */}
             {prev && (
               <div className="flex items-center justify-between text-xs text-zinc-400 font-mono pt-1 border-t border-zinc-800/60">
-                <span>전월 총 지출: {formatJPYShort(
+                <span>{prev.month.replace('-', '년 ')}월 총 지출: {formatJPYShort(
                   SPENDING_CATEGORIES.reduce((s, c) => s + (prev[c] || 0), 0)
                 )}</span>
                 {(() => {
