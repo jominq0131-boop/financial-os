@@ -7,6 +7,7 @@ interface CashflowStore {
   items: CashflowItem[];
   addItem: (item: Omit<CashflowItem, 'id'>) => void;
   deleteItem: (id: string) => void;
+  updateItem: (id: string, updated: Partial<CashflowItem>) => void;
   getTotalIncome: () => number;
   getTotalExpense: () => number;
   getEssentialExpense: () => number;
@@ -89,6 +90,21 @@ export const useCashflowStore = create<CashflowStore>()(
             action: 'DELETE',
             title: `현금흐름 삭제: ${target.title}`,
             detail: `삭제된 항목: 월 ￥${target.amount.toLocaleString()}`,
+          });
+        }
+      },
+
+      updateItem: (id, updated) => {
+        const target = get().items.find((i) => i.id === id);
+        set((state) => ({
+          items: state.items.map((i) => (i.id === id ? { ...i, ...updated } : i)),
+        }));
+        if (target) {
+          useHistoryStore.getState().addLog({
+            type: 'CASHFLOW',
+            action: 'UPDATE',
+            title: `현금흐름 수정: ${updated.title || target.title}`,
+            detail: `수정된 금액: 월 ￥${(updated.amount ?? target.amount).toLocaleString()}`,
           });
         }
       },

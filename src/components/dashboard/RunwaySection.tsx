@@ -7,7 +7,10 @@ import { calculateFinancialRunway } from '@/engine/runwayEngine';
 import { CASHFLOW_TYPE_LABELS, CashflowType } from '@/types/cashflow';
 import { formatJPY } from '@/utils/currency';
 import Tooltip from '@/components/common/Tooltip';
-import { Flame, Plus, Trash2, ArrowUpRight, ArrowDownRight, Activity } from 'lucide-react';
+import { Flame, Plus, Trash2, ArrowUpRight, ArrowDownRight, Activity, Edit3 } from 'lucide-react';
+import EditCashflowModal from './EditCashflowModal';
+import EmergencyFundCard from './EmergencyFundCard';
+import { CashflowItem } from '@/types/cashflow';
 
 export default function RunwaySection() {
   const { items, addItem, deleteItem, getTotalIncome, getTotalExpense, getEssentialExpense, getNetSurplus } =
@@ -36,6 +39,7 @@ export default function RunwaySection() {
   const [type, setType] = useState<CashflowType>('EXPENSE_FIXED');
   const [amount, setAmount] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingItem, setEditingItem] = useState<CashflowItem | null>(null);
 
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,6 +96,9 @@ export default function RunwaySection() {
           </div>
         </div>
       </div>
+
+      {/* 3-Month Emergency Fund Strategy Card */}
+      <EmergencyFundCard />
 
       {/* Cashflow Tank & Grid Header */}
       <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
@@ -206,7 +213,7 @@ export default function RunwaySection() {
           return (
             <div
               key={item.id}
-              className="flex items-center justify-between bg-zinc-900/40 border border-zinc-800/60 rounded-xl px-4 py-3 hover:border-zinc-700 transition"
+              className="flex items-center justify-between bg-zinc-900/40 border border-zinc-800/60 rounded-xl px-4 py-3 hover:border-zinc-700 transition group"
             >
               <div className="flex items-center gap-3">
                 <span
@@ -221,7 +228,7 @@ export default function RunwaySection() {
                 <span className="text-sm font-medium text-white">{item.title}</span>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <span
                   className={`text-sm font-bold font-mono ${
                     info.isIncome ? 'text-emerald-400' : 'text-zinc-200'
@@ -229,17 +236,34 @@ export default function RunwaySection() {
                 >
                   {info.isIncome ? '+' : '-'}{formatVal(item.amount)}
                 </span>
-                <button
-                  onClick={() => deleteItem(item.id)}
-                  className="text-zinc-500 hover:text-rose-400 transition p-1"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                  <button
+                    onClick={() => setEditingItem(item)}
+                    className="text-zinc-400 hover:text-emerald-400 p-1"
+                    title="항목 수정"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => deleteItem(item.id)}
+                    className="text-zinc-500 hover:text-rose-400 p-1"
+                    title="항목 삭제"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             </div>
           );
         })}
       </div>
+
+      {/* Edit Cashflow Modal */}
+      <EditCashflowModal
+        isOpen={Boolean(editingItem)}
+        onClose={() => setEditingItem(null)}
+        item={editingItem}
+      />
     </section>
   );
 }

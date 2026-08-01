@@ -9,6 +9,7 @@ interface TimelineStore {
   setCurrentAge: (age: number) => void;
   addEvent: (event: Omit<LifeEvent, 'id'>) => void;
   deleteEvent: (id: string) => void;
+  updateEvent: (id: string, updated: Partial<LifeEvent>) => void;
   getSortedEvents: () => LifeEvent[];
   getTotalRequiredTarget: () => number;
 }
@@ -74,6 +75,21 @@ export const useTimelineStore = create<TimelineStore>()(
             action: 'DELETE',
             title: `마일스톤 삭제: ${target.title}`,
             detail: `목표금액: ￥${target.requiredAmount.toLocaleString()}`,
+          });
+        }
+      },
+
+      updateEvent: (id, updated) => {
+        const target = get().events.find((e) => e.id === id);
+        set((state) => ({
+          events: state.events.map((e) => (e.id === id ? { ...e, ...updated } : e)),
+        }));
+        if (target) {
+          useHistoryStore.getState().addLog({
+            type: 'TIMELINE',
+            action: 'UPDATE',
+            title: `마일스톤 수정: ${updated.title || target.title}`,
+            detail: `수정된 목표금액: ￥${(updated.requiredAmount ?? target.requiredAmount).toLocaleString()}`,
           });
         }
       },

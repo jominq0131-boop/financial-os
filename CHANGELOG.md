@@ -2,6 +2,27 @@
 
 ---
 
+## [1.3.0] - 2026-08-01
+
+### Added
+- **멀티 컬럼 반응형 관제 대시보드 (Redesign)**: `max-w-7xl` 넓은 화면을 활용한 2컬럼/3컬럼 관제 센터 그리드 배치 개편
+- **월간 순자산 스냅샷 & 성장 트래커 (#18)**: 매월 순자산을 기록하고 전월 대비 증감액(MoM)을 시각화하는 `SnapshotGrowthChart.tsx` 및 `useSnapshotStore.ts`
+- **3개월 치 생활비 비상금 전략 카드 (#20)**: 월 지출 x 3개월 비상금 달성 현황 점검 및 "100% 저축" vs "100% NISA/주식 투자" 자동 지침 제공 카드 (`EmergencyFundCard.tsx`)
+- **신NISA 상세 한도 트래커 (#19)**: 실제 등록된 NISA 자산을 동적 자동 집계하여 연간한도(360만엔) 및 생애한도(1800만엔) 소진율 표시 카드 (`NisaTrackerCard.tsx`)
+- **세후 실수익 비교 시뮬레이터 (#21)**: 일본 과세 계좌(20.315%) vs 신NISA 비과세 계좌 수익률 및 절세 이득액 비교 (`TaxReturnSection.tsx`)
+- **목표 저축률 & FIRE 플래너 (#22)**: 목표 은퇴 연령 기준 복리 역산 필요 월 저축액 및 저축률 연산 (`SavingsPlannerSection.tsx`)
+- **인라인 수정(Edit) 모달**:
+  - `EditAssetModal.tsx` — 기존 자산 항목명, 금액, 기대수익률, 비고 수정
+  - `EditCashflowModal.tsx` — 현금흐름 수입/지출 항목명, 금액, 필수여부 수정
+  - `EditEventModal.tsx` — 생애 이벤트 연령, 필요자금, 카테고리 수정
+- **개인 재정 관제 설정 모달**: `SettingsModal.tsx` 및 `useSettingsStore.ts` — 사용자 연령(34세 등 동적 변경), 비상금 개월 수(3개월), iDeCo 미사용자용 온/오프 토글, FIRE 목표금액 설정
+
+### Changed
+- **ForecastChart**: 자산 규모에 따라 축 단위가 `만 엔` ↔ `억 엔`으로 자동 전환되도록 로직 개선
+- **AssetSection / RunwaySection / LifeEventSection**: 각 카드 우측 상단 호버 시 수정(Edit ✏️) 버튼 연동
+
+---
+
 ## [1.2.0] - 2026-08-01
 
 ### Added
@@ -11,12 +32,6 @@
 - **한국어 전면화 (2차 전수 검사)**: `LiquidityMatrix`, `TimePriceCalculator` 등 잔존 일본어 텍스트 완전 제거
 - **엔화(JPY ￥) 통화 표기 통일**: `₩`, `KRW` 표기를 `formatJPY()` / `formatJPYShort()` 함수로 전체 일괄 교체
 - `useHydrated.ts` — 마운트 이후에만 `localStorage` 데이터를 사용하도록 처리하는 클라이언트 전용 훅
-
-### Changed
-- `asset.ts` — `CATEGORY_LABELS` 및 `TIER_LABELS`에 한국어 description 필드 추가 (Tooltip에 활용)
-- `AddAssetModal.tsx` — 평가 금액 입력 라벨을 `(원)` → `(엔 / JPY)`로 수정
-- `RunwaySection.tsx` — 현금흐름 입력 placeholder를 `(원)` → `(엔화 금액)` 으로 수정
-- `page.tsx` — `useHydrated` 적용, 초기 렌더 시 KPI 카드 값을 안전한 기본값으로 표시
 
 ---
 

@@ -5,12 +5,15 @@ import { useAssetStore } from '@/store/useAssetStore';
 import { CATEGORY_LABELS, AssetCategory } from '@/types/asset';
 import { formatJPY } from '@/utils/currency';
 import Tooltip from '@/components/common/Tooltip';
-import { Plus, Trash2, Shield, Eye, EyeOff } from 'lucide-react';
+import { Plus, Trash2, Shield, Eye, EyeOff, Edit3 } from 'lucide-react';
 import AddAssetModal from './AddAssetModal';
+import EditAssetModal from './EditAssetModal';
+import { Asset } from '@/types/asset';
 
 export default function AssetSection() {
   const { assets, isPrivate, togglePrivacy, deleteAsset } = useAssetStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingAsset, setEditingAsset] = useState<Asset | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<AssetCategory | 'ALL'>('ALL');
 
   const filteredAssets = selectedCategory === 'ALL'
@@ -111,13 +114,22 @@ export default function AssetSection() {
                       {categoryInfo.label}
                       <Tooltip content={categoryInfo.description} />
                     </span>
-                    <button
-                      onClick={() => deleteAsset(asset.id)}
-                      className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-rose-400 transition p-1"
-                      title="자산 삭제"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                      <button
+                        onClick={() => setEditingAsset(asset)}
+                        className="text-zinc-400 hover:text-emerald-400 p-1"
+                        title="자산 수정"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => deleteAsset(asset.id)}
+                        className="text-zinc-500 hover:text-rose-400 p-1"
+                        title="자산 삭제"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                   <h3 className="text-base font-bold text-white mb-1">{asset.name}</h3>
                   <div className="text-2xl font-extrabold text-zinc-100 font-mono tracking-tight">
@@ -139,6 +151,12 @@ export default function AssetSection() {
 
       {/* Add Asset Modal */}
       <AddAssetModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      {/* Edit Asset Modal */}
+      <EditAssetModal
+        isOpen={Boolean(editingAsset)}
+        onClose={() => setEditingAsset(null)}
+        asset={editingAsset}
+      />
     </section>
   );
 }

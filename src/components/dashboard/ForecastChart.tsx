@@ -18,10 +18,13 @@ import {
 } from 'recharts';
 import { TrendingUp, Sliders, Info } from 'lucide-react';
 
+import { useSettingsStore } from '@/store/useSettingsStore';
+
 export default function ForecastChart() {
   const { getTotalNetWorth, isPrivate } = useAssetStore();
   const { getNetSurplus } = useCashflowStore();
-  const { events, currentAge } = useTimelineStore();
+  const { events } = useTimelineStore();
+  const { currentAge } = useSettingsStore();
 
   const [expectedYield, setExpectedYield] = useState(6.0); // 기본 6%
   const [inflationRate, setInflationRate] = useState(2.0); // 기본 2%
@@ -38,10 +41,16 @@ export default function ForecastChart() {
     events
   );
 
-  // 차트 렌더링용 데이터 변환 (억 엔 단위)
+  // 최고 자산 규모 파악하여 축 단위 판단 (1억엔 이상은 억엔, 미만은 만엔)
+  const maxWorth = Math.max(...simulationData.map((d) => d.netWorth));
+  const isOver100M = maxWorth >= 100000000;
+
+  // 차트 렌더링용 데이터 변환
   const chartData = simulationData.map((d) => ({
     ...d,
-    netWorthIn100M: Number((d.netWorth / 100000000).toFixed(2)),
+    netWorthDisplay: isOver100M
+      ? Number((d.netWorth / 100000000).toFixed(2))
+      : Math.round(d.netWorth / 10000),
     labelAge: `${d.age}세`,
   }));
 
@@ -106,7 +115,7 @@ export default function ForecastChart() {
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
               <XAxis dataKey="labelAge" stroke="#71717a" fontSize={11} />
-              <YAxis stroke="#71717a" fontSize={11} unit="억엔" />
+              <YAxis stroke="#71717a" fontSize={11} unit={isOver100M ? '억엔' : '만엔'} />
               <Tooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
@@ -132,7 +141,7 @@ export default function ForecastChart() {
               />
               <Area
                 type="monotone"
-                dataKey="netWorthIn100M"
+                dataKey="netWorthDisplay"
                 stroke="#10b981"
                 strokeWidth={2.5}
                 fillOpacity={1}

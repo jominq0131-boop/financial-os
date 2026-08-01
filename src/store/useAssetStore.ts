@@ -26,6 +26,7 @@ interface AssetStore {
   getTotalNetWorth: () => number;
   getAssetsByCategory: (category: AssetCategory) => Asset[];
   getMonthlyDividend: () => number;
+  getNisaTotal: () => number;
   getTierAllocation: () => {
     tier: keyof TargetRatios;
     currentAmount: number;
@@ -177,6 +178,12 @@ export const useAssetStore = create<AssetStore>()(
       getMonthlyDividend: () => {
         const total = get().getTotalNetWorth();
         return Math.floor((total * 0.04) / 12);
+      },
+
+      getNisaTotal: () => {
+        return get()
+          .assets.filter((a) => a.category === 'NISA')
+          .reduce((sum, a) => sum + a.amount, 0);
       },
 
       getTierAllocation: () => {

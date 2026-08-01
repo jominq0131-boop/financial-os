@@ -6,13 +6,18 @@ import { useAssetStore } from '@/store/useAssetStore';
 import { EVENT_CATEGORY_LABELS } from '@/types/timeline';
 import { formatJPY } from '@/utils/currency';
 import Tooltip from '@/components/common/Tooltip';
-import { Calendar, Plus, Trash2, Milestone } from 'lucide-react';
+import { Calendar, Plus, Trash2, Milestone, Edit3 } from 'lucide-react';
 import AddEventModal from './AddEventModal';
+import EditEventModal from './EditEventModal';
+import { LifeEvent } from '@/types/timeline';
+import { useSettingsStore } from '@/store/useSettingsStore';
 
 export default function LifeEventSection() {
-  const { getSortedEvents, deleteEvent, getTotalRequiredTarget, currentAge } = useTimelineStore();
+  const { getSortedEvents, deleteEvent, getTotalRequiredTarget } = useTimelineStore();
+  const { currentAge } = useSettingsStore();
   const { getTotalNetWorth, isPrivate } = useAssetStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<LifeEvent | null>(null);
 
   const events = getSortedEvents();
   const totalRequired = getTotalRequiredTarget();
@@ -86,12 +91,22 @@ export default function LifeEventSection() {
                       >
                         {isTargetReached ? '자금 달성 완료' : '준비 진행 중'}
                       </span>
-                      <button
-                        onClick={() => deleteEvent(evt.id)}
-                        className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-rose-400 transition p-1"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                        <button
+                          onClick={() => setEditingEvent(evt)}
+                          className="text-zinc-400 hover:text-emerald-400 p-1"
+                          title="이벤트 수정"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteEvent(evt.id)}
+                          className="text-zinc-500 hover:text-rose-400 p-1"
+                          title="이벤트 삭제"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -120,6 +135,12 @@ export default function LifeEventSection() {
 
       {/* Add Modal */}
       <AddEventModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      {/* Edit Modal */}
+      <EditEventModal
+        isOpen={Boolean(editingEvent)}
+        onClose={() => setEditingEvent(null)}
+        event={editingEvent}
+      />
     </section>
   );
 }
