@@ -21,8 +21,8 @@ import SnapshotGrowthChart from '@/components/dashboard/SnapshotGrowthChart';
 import NisaTrackerCard from '@/components/dashboard/NisaTrackerCard';
 import TaxReturnSection from '@/components/dashboard/TaxReturnSection';
 import SavingsPlannerSection from '@/components/dashboard/SavingsPlannerSection';
+import MonthlyBriefingCard from '@/components/dashboard/MonthlyBriefingCard';
 import EmergencyFundCard from '@/components/dashboard/EmergencyFundCard';
-
 import Tooltip from '@/components/common/Tooltip';
 import { formatJPY, formatJPYShort } from '@/utils/currency';
 import { Sparkles, ShieldCheck, ArrowUpRight, TrendingUp } from 'lucide-react';
@@ -90,6 +90,9 @@ export default function Home() {
           {/* TAB 1: 🚀 관제 요약 (Overview) */}
           {activeTab === 'overview' && (
             <div className="space-y-8 animate-fade-in">
+              {/* Executive Monthly Performance Briefing Center */}
+              <MonthlyBriefingCard />
+
               {/* 4 KPI Cards */}
               <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Net Worth */}
