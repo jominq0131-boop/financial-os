@@ -73,11 +73,11 @@ export default function FireRoutineCard() {
           <div>
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <Flame className="w-5 h-5 text-amber-400" />
-              FIRE 습관 루틴 체크리스트
-              <Tooltip content="매월 반복해야 할 FIRE 달성 루틴을 완료할 때마다 XP를 획득합니다. 전체 완료 시 폭죽 팡파르가 터집니다!" />
+              월간 재정 루틴 체크리스트
+              <Tooltip content="매월 꼭 챙겨야 할 7대 핵심 재정 점검 항목입니다. 루틴을 체크하여 이번 달 완주를 달성해보세요!" />
             </h2>
             <p className="text-xs text-zinc-400 mt-1">
-              월간 재정 루틴 달성으로 FIRE 습관을 만들어가세요
+              매월 저축·NISA·스냅샷 점검 등 습관 루틴 달성하기
             </p>
           </div>
 
@@ -102,30 +102,22 @@ export default function FireRoutineCard() {
           </div>
         </div>
 
-        {/* XP Progress Bar */}
+        {/* Routine Progress Bar */}
         <div className="space-y-2">
           <div className="flex justify-between items-center text-xs">
             <span className="text-zinc-400 flex items-center gap-1.5">
               <Zap className="w-3.5 h-3.5 text-amber-400" />
-              이번 달 루틴 XP
+              이번 달 루틴 점검률
             </span>
             <span className="font-extrabold text-amber-400 font-mono text-sm">
-              {isHydrated ? monthXP : 0} / {MAX_XP_PER_MONTH} XP
+              {isHydrated ? completionRate : 0}% ({completedIds.length} / {FIRE_ROUTINES.length} 완료)
             </span>
           </div>
           <div className="w-full bg-zinc-950 h-3 rounded-full overflow-hidden border border-zinc-800/80">
             <div
               className={`h-full rounded-full transition-all duration-700 ${getXpColor()}`}
-              style={{ width: `${isHydrated ? xpPercent : 0}%` }}
+              style={{ width: `${isHydrated ? completionRate : 0}%` }}
             />
-          </div>
-          <div className="flex justify-between text-[11px] text-zinc-500">
-            <span>달성률 {isHydrated ? completionRate : 0}% ({completedIds.length}/{FIRE_ROUTINES.length})</span>
-            {allDone && isHydrated && (
-              <span className="text-amber-400 font-bold flex items-center gap-1">
-                <Trophy className="w-3 h-3" /> 이번 달 완주!
-              </span>
-            )}
           </div>
         </div>
 
@@ -162,14 +154,13 @@ export default function FireRoutineCard() {
                   <div className="text-[11px] text-zinc-400 mt-0.5 leading-relaxed">{routine.description}</div>
                 </div>
 
-                {/* XP Badge */}
-                <div className={`shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-full border font-mono flex items-center gap-1 transition ${
+                {/* Status Badge */}
+                <div className={`shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-full border transition ${
                   isDone
                     ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                    : 'bg-zinc-800 border-zinc-700 text-zinc-400 group-hover:text-amber-400 group-hover:border-amber-500/30 group-hover:bg-amber-500/10'
+                    : 'bg-zinc-800 border-zinc-700 text-zinc-400 group-hover:text-zinc-200'
                 }`}>
-                  <Zap className="w-2.5 h-2.5" />
-                  +{routine.xp} XP
+                  {isDone ? '완료' : '미체크'}
                 </div>
               </button>
             );

@@ -28,7 +28,6 @@ import FinancialLevelCard from '@/components/dashboard/FinancialLevelCard';
 import GoalTrackerSection from '@/components/dashboard/GoalTrackerSection';
 import SpendingTemperatureCard from '@/components/dashboard/SpendingTemperatureCard';
 import FireRoutineCard from '@/components/dashboard/FireRoutineCard';
-import StockPortfolioSection from '@/components/dashboard/StockPortfolioSection';
 import Tooltip from '@/components/common/Tooltip';
 import { formatJPY, formatJPYShort } from '@/utils/currency';
 import { Sparkles, ShieldCheck, ArrowUpRight, TrendingUp } from 'lucide-react';
@@ -213,7 +212,6 @@ export default function Home() {
           {activeTab === 'assets' && (
             <div className="space-y-8 animate-fade-in">
               <AssetSection />
-              <StockPortfolioSection />
               <RunwaySection />
               <SpendingTemperatureCard />
               <BucketSection />
