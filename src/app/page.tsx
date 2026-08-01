@@ -7,6 +7,7 @@ import { useHydrated } from '@/hooks/useHydrated';
 import Sidebar, { NavTab } from '@/components/navigation/Sidebar';
 import Header from '@/components/navigation/Header';
 import SettingsModal from '@/components/dashboard/SettingsModal';
+import { APP_VERSION } from '@/constants/version';
 
 // Components by Domain
 import AssetSection from '@/components/dashboard/AssetSection';
@@ -245,7 +246,7 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="mt-auto py-6 border-t border-zinc-800/60 px-4 md:px-8 text-xs text-zinc-400 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>Financial OS v1.3 · Production Architecture (일본 거주 한국인 전용)</span>
+          <span>Financial OS {APP_VERSION} · Production Architecture (일본 거주 한국인 전용)</span>
           <span>Privacy-First · Local Persistent · Clean Architecture</span>
         </footer>
       </div>

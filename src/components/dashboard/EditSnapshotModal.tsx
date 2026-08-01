@@ -14,17 +14,17 @@ export default function EditSnapshotModal({ isOpen, onClose, snapshot }: EditSna
   const { updateSnapshot } = useSnapshotStore();
 
   const [date, setDate] = useState('');
-  const [netWorth, setNetWorth] = useState<number>(0);
-  const [totalCash, setTotalCash] = useState<number>(0);
-  const [totalInvestments, setTotalInvestments] = useState<number>(0);
+  const [netWorth, setNetWorth] = useState<string>('0');
+  const [totalCash, setTotalCash] = useState<string>('0');
+  const [totalInvestments, setTotalInvestments] = useState<string>('0');
   const [note, setNote] = useState('');
 
   useEffect(() => {
     if (snapshot) {
       setDate(snapshot.date);
-      setNetWorth(snapshot.netWorth);
-      setTotalCash(snapshot.totalCash);
-      setTotalInvestments(snapshot.totalInvestments);
+      setNetWorth(String(snapshot.netWorth));
+      setTotalCash(String(snapshot.totalCash));
+      setTotalInvestments(String(snapshot.totalInvestments));
       setNote(snapshot.note || '');
     }
   }, [snapshot]);
@@ -37,9 +37,9 @@ export default function EditSnapshotModal({ isOpen, onClose, snapshot }: EditSna
 
     updateSnapshot(snapshot.id, {
       date,
-      netWorth: Number(netWorth),
-      totalCash: Number(totalCash),
-      totalInvestments: Number(totalInvestments),
+      netWorth: Number(netWorth) || 0,
+      totalCash: Number(totalCash) || 0,
+      totalInvestments: Number(totalInvestments) || 0,
       note,
     });
 
@@ -79,9 +79,11 @@ export default function EditSnapshotModal({ isOpen, onClose, snapshot }: EditSna
               type="number"
               value={netWorth}
               onChange={(e) => {
-                const val = Number(e.target.value);
-                setNetWorth(val);
-                setTotalInvestments(Math.max(0, val - totalCash));
+                const strVal = e.target.value;
+                setNetWorth(strVal);
+                const val = Number(strVal) || 0;
+                const cashVal = Number(totalCash) || 0;
+                setTotalInvestments(String(Math.max(0, val - cashVal)));
               }}
               className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2 text-sm text-white font-mono focus:outline-none focus:border-emerald-500"
               required
@@ -95,9 +97,11 @@ export default function EditSnapshotModal({ isOpen, onClose, snapshot }: EditSna
                 type="number"
                 value={totalCash}
                 onChange={(e) => {
-                  const cashVal = Number(e.target.value);
-                  setTotalCash(cashVal);
-                  setTotalInvestments(Math.max(0, netWorth - cashVal));
+                  const cashStr = e.target.value;
+                  setTotalCash(cashStr);
+                  const cashVal = Number(cashStr) || 0;
+                  const nwVal = Number(netWorth) || 0;
+                  setTotalInvestments(String(Math.max(0, nwVal - cashVal)));
                 }}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2 text-sm text-white font-mono focus:outline-none focus:border-emerald-500"
               />
@@ -108,7 +112,7 @@ export default function EditSnapshotModal({ isOpen, onClose, snapshot }: EditSna
               <input
                 type="number"
                 value={totalInvestments}
-                onChange={(e) => setTotalInvestments(Number(e.target.value))}
+                onChange={(e) => setTotalInvestments(e.target.value)}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2 text-sm text-white font-mono focus:outline-none focus:border-emerald-500"
               />
             </div>

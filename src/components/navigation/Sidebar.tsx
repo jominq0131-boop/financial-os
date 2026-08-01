@@ -3,6 +3,7 @@
 import React from 'react';
 import { useAssetStore } from '@/store/useAssetStore';
 import { useHydrated } from '@/hooks/useHydrated';
+import { APP_VERSION } from '@/constants/version';
 import {
   LayoutDashboard,
   Wallet,
@@ -82,7 +83,7 @@ export default function Sidebar({
                     JP
                   </span>
                 </h1>
-                <p className="text-[10px] text-zinc-400 font-mono">Mission Control v1.3</p>
+                <p className="text-[10px] text-zinc-400 font-mono">Mission Control {APP_VERSION}</p>
               </div>
             )}
           </div>

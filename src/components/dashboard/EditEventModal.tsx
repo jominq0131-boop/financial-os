@@ -15,8 +15,8 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
   const { updateEvent } = useTimelineStore();
 
   const [title, setTitle] = useState('');
-  const [targetAge, setTargetAge] = useState<number>(35);
-  const [requiredAmount, setRequiredAmount] = useState<number>(0);
+  const [targetAge, setTargetAge] = useState<string>('35');
+  const [requiredAmount, setRequiredAmount] = useState<string>('0');
   const [category, setCategory] = useState<EventCategory>('DREAM');
   const [priority, setPriority] = useState<EventPriority>('MEDIUM');
   const [description, setDescription] = useState('');
@@ -24,8 +24,8 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
   useEffect(() => {
     if (event) {
       setTitle(event.title);
-      setTargetAge(event.targetAge);
-      setRequiredAmount(event.requiredAmount);
+      setTargetAge(String(event.targetAge));
+      setRequiredAmount(String(event.requiredAmount));
       setCategory(event.category);
       setPriority(event.priority);
       setDescription(event.description || '');
@@ -40,8 +40,8 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
 
     updateEvent(event.id, {
       title,
-      targetAge: Number(targetAge),
-      requiredAmount: Number(requiredAmount),
+      targetAge: Number(targetAge) || 35,
+      requiredAmount: Number(requiredAmount) || 0,
       category,
       priority,
       description,
@@ -82,20 +82,20 @@ export default function EditEventModal({ isOpen, onClose, event }: EditEventModa
               <input
                 type="number"
                 value={targetAge}
-                onChange={(e) => setTargetAge(Number(e.target.value))}
+                onChange={(e) => setTargetAge(e.target.value)}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2 text-sm text-white font-mono focus:outline-none focus:border-emerald-500"
-                min={20}
+                min={18}
                 max={100}
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs text-zinc-400 mb-1">소요 자금 (엔 ￥)</label>
+              <label className="block text-xs text-zinc-400 mb-1">필요 자금 (엔 ￥)</label>
               <input
                 type="number"
                 value={requiredAmount}
-                onChange={(e) => setRequiredAmount(Number(e.target.value))}
+                onChange={(e) => setRequiredAmount(e.target.value)}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2 text-sm text-white font-mono focus:outline-none focus:border-emerald-500"
                 min={0}
                 required

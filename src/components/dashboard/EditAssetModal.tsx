@@ -17,8 +17,8 @@ export default function EditAssetModal({ isOpen, onClose, asset }: EditAssetModa
   const [name, setName] = useState('');
   const [category, setCategory] = useState<AssetCategory>('CASH');
   const [tier, setTier] = useState<BucketTier>('TIER_1_SAFETY');
-  const [amount, setAmount] = useState<number>(0);
-  const [expectedYield, setExpectedYield] = useState<number>(0);
+  const [amount, setAmount] = useState<string>('0');
+  const [expectedYield, setExpectedYield] = useState<string>('0');
   const [notes, setNotes] = useState('');
 
   useEffect(() => {
@@ -26,8 +26,8 @@ export default function EditAssetModal({ isOpen, onClose, asset }: EditAssetModa
       setName(asset.name);
       setCategory(asset.category);
       setTier(asset.tier);
-      setAmount(asset.amount);
-      setExpectedYield(asset.expectedYield || 0);
+      setAmount(String(asset.amount));
+      setExpectedYield(String(asset.expectedYield || 0));
       setNotes(asset.notes || '');
     }
   }, [asset]);
@@ -42,8 +42,8 @@ export default function EditAssetModal({ isOpen, onClose, asset }: EditAssetModa
       name,
       category,
       tier,
-      amount: Number(amount),
-      expectedYield: Number(expectedYield),
+      amount: Number(amount) || 0,
+      expectedYield: Number(expectedYield) || 0,
       notes,
     });
 
@@ -113,7 +113,7 @@ export default function EditAssetModal({ isOpen, onClose, asset }: EditAssetModa
               <input
                 type="number"
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
+                onChange={(e) => setAmount(e.target.value)}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2 text-sm text-white font-mono focus:outline-none focus:border-emerald-500"
                 min={0}
                 required
@@ -126,7 +126,7 @@ export default function EditAssetModal({ isOpen, onClose, asset }: EditAssetModa
                 type="number"
                 step="0.1"
                 value={expectedYield}
-                onChange={(e) => setExpectedYield(Number(e.target.value))}
+                onChange={(e) => setExpectedYield(e.target.value)}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2 text-sm text-white font-mono focus:outline-none focus:border-emerald-500"
               />
             </div>

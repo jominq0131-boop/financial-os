@@ -16,7 +16,7 @@ export default function EditCashflowModal({ isOpen, onClose, item }: EditCashflo
 
   const [title, setTitle] = useState('');
   const [type, setType] = useState<CashflowType>('EXPENSE_FIXED');
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<string>('0');
   const [category, setCategory] = useState('');
   const [isEssential, setIsEssential] = useState(true);
 
@@ -24,7 +24,7 @@ export default function EditCashflowModal({ isOpen, onClose, item }: EditCashflo
     if (item) {
       setTitle(item.title);
       setType(item.type);
-      setAmount(item.amount);
+      setAmount(String(item.amount));
       setCategory(item.category);
       setIsEssential(item.isEssential);
     }
@@ -39,7 +39,7 @@ export default function EditCashflowModal({ isOpen, onClose, item }: EditCashflo
     updateItem(item.id, {
       title,
       type,
-      amount: Number(amount),
+      amount: Number(amount) || 0,
       category,
       isEssential,
     });
@@ -112,7 +112,7 @@ export default function EditCashflowModal({ isOpen, onClose, item }: EditCashflo
             <input
               type="number"
               value={amount}
-              onChange={(e) => setAmount(Number(e.target.value))}
+              onChange={(e) => setAmount(e.target.value)}
               className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3.5 py-2 text-sm text-white font-mono focus:outline-none focus:border-emerald-500"
               min={0}
               required

@@ -42,13 +42,20 @@ export default function MonthlyBriefingCard() {
   const netSurplus = getNetSurplus();
   const surplusRate = totalIncome > 0 ? Number(((netSurplus / totalIncome) * 100).toFixed(1)) : 0;
 
-  // 전월 스냅샷 비교 (스냅샷 이력 중 가장 최근 정산 내역)
-  const lastMonthSnapshot = snapshots.length > 0 ? snapshots[snapshots.length - 1] : null;
+  // 전월 스냅샷 비교 (현재 선택 정산월보다 이전인 정산 내역 중 가장 최신 항목 탐색)
+  const targetMonth = selectedMonth || todayDate;
+  const priorSnapshots = snapshots.filter((s) => s.date < targetMonth);
+  const prevMonthSnapshot =
+    priorSnapshots.length > 0
+      ? priorSnapshots[priorSnapshots.length - 1]
+      : snapshots.length > 1
+      ? snapshots[snapshots.length - 2]
+      : null;
 
-  const momGrowth = lastMonthSnapshot ? currentNetWorth - lastMonthSnapshot.netWorth : 0;
+  const momGrowth = prevMonthSnapshot ? currentNetWorth - prevMonthSnapshot.netWorth : 0;
   const momPercent =
-    lastMonthSnapshot && lastMonthSnapshot.netWorth > 0
-      ? Number(((momGrowth / lastMonthSnapshot.netWorth) * 100).toFixed(1))
+    prevMonthSnapshot && prevMonthSnapshot.netWorth > 0
+      ? Number(((momGrowth / prevMonthSnapshot.netWorth) * 100).toFixed(1))
       : 0;
 
   const isSurplus = momGrowth >= 0;
@@ -178,7 +185,7 @@ export default function MonthlyBriefingCard() {
             </span>
           </div>
           <p className="text-[11px] text-zinc-500">
-            {lastMonthSnapshot ? `직전 정산(${lastMonthSnapshot.date}) 기준 비교` : '최초 등록 정산 상태'}
+            {prevMonthSnapshot ? `직전 정산(${prevMonthSnapshot.date}) 기준 비교` : '최초 등록 정산 상태'}
           </p>
         </div>
 
