@@ -4,13 +4,17 @@
 
 ## [2.0.0] - 2026-08-01
 
-### Added — #30 주식/ETF 보유 종목 수익률 기록기 (StockPortfolioSection)
-- **신규 스토어 `useHoldingStore.ts`**: 종목별 티커, 계좌 유형(신NISA 성장/적립, 특정계좌, iDeCo 등), 수량, 평균 매입가, 현재가(수기), 통화(JPY/USD) 및 환율 저장
-- **신규 컴포넌트 `StockPortfolioSection.tsx`**: 자산 탭(Assets)에 전면 배치
-  - 총 매입금액, 현재 평가금액, 총 평가손익(엔화 ￥ 및 수익률 %) KPI 카드 3종 시각화
-  - USD/JPY 환율 선택적 적용(달러 종목 환산) 및 계좌 유형 배지 시각화
-  - 신규 종목 추가 모달(`AddHoldingModal.tsx`) 및 종목 정보 수정 모달(`EditHoldingModal.tsx`)
-- **버그 수정**: `FireRoutineCard.tsx` 월별 이동 시 타임존(UTC vs KST) 이슈로 2개월 뛰는 버그 및 2026년 이후 이동 불가 현상 완벽 해결
+### Refactored & Improved — 대시보드 100% 시각화 관제탑 개편 & UI 클린업
+- **🏛️ 관제 요약 (Overview) 탭 100% 시각화 관제탑 개편**:
+  - 모달 팝업 및 입력형 카드(`FireRoutineCard`, `MonthlyBriefingCard`)를 관제 요약에서 전면 제거하고 '세제' 및 '자산' 탭으로 이동.
+  - 관제 요약 탭을 100% 읽기 전용 대시보드로 통일: **4대 KPI ➔ 목표 달성도 예측 ➔ 50년 자산 시뮬레이터 ➔ 월간 성장이력 스냅샷 ➔ 비상금 방어망 ➔ 게이밍 레벨 랭킹** 구조로 재배치.
+- **📸 성장이력 차트 총자산 vs 투자자산 라벨 구분 (`SnapshotGrowthChart.tsx`)**:
+  - 차트 범례(Legend) 및 툴팁(Tooltip)에서 초록 영역(총자산 합계)과 보라 막대(투자자산) 명칭을 명확하게 분리하여 시각화 혼선 해결.
+- **🌡️ 월별 지출 온도계 동적 연월 라벨링 (`SpendingTemperatureCard.tsx`)**:
+  - 고정 텍스트(전월/이번달)를 제거하고 선택된 실제 연월 기준(`2026년 7월 (기준)`, `2026년 6월`) 동적 표기식으로 수정.
+- **⚡ 컴팩트 UX 및 중복 제거**:
+  - `Intelligence` 탭의 중복 `NisaTrackerCard` 제거 및 불필요한 수기 주식 기록기 간소화.
+  - `FireRoutineCard.tsx` 월별 이동 시 타임존(UTC vs KST) 이슈로 2개월 뛰는 버그 및 2026년 이후 이동 불가 현상 완벽 해결.
 
 ---
 
