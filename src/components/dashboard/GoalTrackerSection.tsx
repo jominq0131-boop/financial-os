@@ -19,11 +19,11 @@ interface GoalPreset {
 export default function GoalTrackerSection() {
   const isHydrated = useHydrated();
   const { getTotalNetWorth, isPrivate } = useAssetStore();
-  const { getNetSurplus } = useCashflowStore();
+  const { getTotalCapitalInflow } = useCashflowStore();
   const { fireTarget } = useSettingsStore();
 
   const totalNetWorth = getTotalNetWorth();
-  const netSurplus = getNetSurplus();
+  const capitalInflow = getTotalCapitalInflow();
 
   // Preset Goals
   const presetGoals: GoalPreset[] = [
@@ -45,9 +45,9 @@ export default function GoalTrackerSection() {
 
   const remainingAmount = Math.max(0, currentGoalAmount - totalNetWorth);
 
-  // Calculate estimated completion months based on monthly net surplus
-  const monthsNeeded = netSurplus > 0 && remainingAmount > 0
-    ? Math.ceil(remainingAmount / netSurplus)
+  // Calculate estimated completion months based on monthly capital inflow (savings + investment + surplus)
+  const monthsNeeded = capitalInflow > 0 && remainingAmount > 0
+    ? Math.ceil(remainingAmount / capitalInflow)
     : 0;
 
   // Calculate target date (YYYY년 MM월)
@@ -74,9 +74,9 @@ export default function GoalTrackerSection() {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-zinc-400 font-mono">현재 저축 페이스:</span>
+          <span className="text-xs text-zinc-400 font-mono">월 실질 자본 유입속도:</span>
           <span className="text-xs font-bold text-cyan-400 font-mono bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-1 rounded-xl">
-            +{isPrivate ? '••••' : formatJPY(netSurplus)} / 월
+            +{isPrivate ? '••••' : formatJPY(capitalInflow)} / 월
           </span>
         </div>
       </div>
@@ -167,12 +167,12 @@ export default function GoalTrackerSection() {
             <div className="text-xl font-bold text-cyan-400 font-mono">
               {remainingAmount === 0
                 ? '달성 완료! 🎉'
-                : netSurplus > 0
+                : capitalInflow > 0
                 ? `약 ${monthsNeeded} 개월`
-                : '지출 초과 상태 ⚠️'}
+                : '적립 여력 부족 ⚠️'}
             </div>
             <p className="text-[11px] text-zinc-500">
-              {netSurplus > 0 ? `현재 월 잉여금 ${formatJPY(netSurplus)} 페이스` : '월 저축 여력 확보 필요'}
+              {capitalInflow > 0 ? `현재 월 자본 유입 ${formatJPY(capitalInflow)} 페이스` : '월 자본 적립 여력 확보 필요'}
             </p>
           </div>
 
@@ -181,20 +181,20 @@ export default function GoalTrackerSection() {
             <span className="text-xs text-zinc-400 font-medium block">예상 목표 달성 시점</span>
             <div className="text-xl font-bold text-emerald-400 font-mono flex items-center gap-1.5">
               <Calendar className="w-4 h-4 text-emerald-400" />
-              {remainingAmount === 0 ? '달성 완료!' : netSurplus > 0 ? getEstimatedDate(monthsNeeded) : '산출 불가'}
+              {remainingAmount === 0 ? '달성 완료!' : capitalInflow > 0 ? getEstimatedDate(monthsNeeded) : '산출 불가'}
             </div>
             <p className="text-[11px] text-zinc-500">
-              {netSurplus > 0 ? '현재 수입/지출 페이스 유지 시' : '잉여금 수치 등록 필요'}
+              {capitalInflow > 0 ? '현재 저축·투자·잉여금 페이스 유지 시' : '자본 적립 수치 등록 필요'}
             </p>
           </div>
         </div>
 
         {/* Motivational Banner */}
-        {remainingAmount > 0 && netSurplus > 0 && (
+        {remainingAmount > 0 && capitalInflow > 0 && (
           <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-between gap-3 text-xs text-emerald-300">
             <span className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
-              현재의 월 <strong>{formatJPY(netSurplus)}</strong> 저축 페이스를 꾸준히 유지하면,{' '}
+              현재의 월 <strong>{formatJPY(capitalInflow)}</strong> 자본 적립 속도를 유지하면,{' '}
               <strong>{getEstimatedDate(monthsNeeded)}</strong>에 목표 <strong>{activeGoal.title}</strong>를 완벽하게 달성하게 됩니다!
             </span>
           </div>

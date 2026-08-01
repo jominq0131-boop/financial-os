@@ -68,11 +68,16 @@ export default function RunwaySection() {
     e.preventDefault();
     if (!title || !amount) return;
 
+    let cat = categoryInput || '기타';
+    if (type.includes('INCOME')) cat = '수입';
+    if (type === 'SAVINGS') cat = '저축';
+    if (type === 'INVESTMENT') cat = '투자';
+
     addItem({
       title,
       type,
       amount: Number(amount),
-      category: type.includes('INCOME') ? '수입' : categoryInput || '기타',
+      category: cat,
       isEssential: true,
     });
 
@@ -139,41 +144,63 @@ export default function RunwaySection() {
         </button>
       </div>
 
-      {/* Monthly Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Monthly 4-Axis Allocation Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         {/* Total Monthly Income */}
-        <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-5 backdrop-blur-md">
-          <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
-            <span>총 월 수입 (근로 + 배당)</span>
+        <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-4 backdrop-blur-md">
+          <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
+            <span>총 월 수입 (In)</span>
             <ArrowUpRight className="w-4 h-4 text-emerald-400" />
           </div>
-          <div className="text-2xl font-bold text-emerald-400 font-mono">
+          <div className="text-xl font-bold text-emerald-400 font-mono">
             {formatVal(totalIncome)}
           </div>
         </div>
 
-        {/* Total Monthly Expense */}
-        <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-5 backdrop-blur-md">
-          <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
-            <span>총 월 지출 (고정 + 변동)</span>
+        {/* Total Consumption Expense */}
+        <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-4 backdrop-blur-md">
+          <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
+            <span>총 소비 지출 (Out)</span>
             <ArrowDownRight className="w-4 h-4 text-rose-400" />
           </div>
-          <div className="text-2xl font-bold text-rose-400 font-mono">
+          <div className="text-xl font-bold text-rose-400 font-mono">
             {formatVal(totalExpense)}
           </div>
         </div>
 
-        {/* Monthly Net Surplus */}
-        <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-5 backdrop-blur-md">
-          <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
-            <span className="flex items-center">
-              월 순잉여금 (Net Surplus)
-              <Tooltip content="월 수입에서 총 지출을 뺀 순 자축/투자 여력 금액입니다." />
-            </span>
-            <span className="text-[10px] text-zinc-500 font-mono">잉여율 {totalIncome > 0 ? ((netSurplus / totalIncome) * 100).toFixed(0) : 0}%</span>
+        {/* Total Safety Savings */}
+        <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-4 backdrop-blur-md">
+          <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
+            <span>안전 저축 (Savings)</span>
+            <span className="text-[10px] text-indigo-400 font-mono">예·적금</span>
           </div>
-          <div className="text-2xl font-bold text-cyan-400 font-mono">
-            {formatVal(netSurplus)}
+          <div className="text-xl font-bold text-indigo-400 font-mono">
+            {formatVal(useCashflowStore.getState().getTotalSavings())}
+          </div>
+        </div>
+
+        {/* Total Asset Investment */}
+        <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-4 backdrop-blur-md">
+          <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
+            <span>자산 투자 (Invest)</span>
+            <span className="text-[10px] text-purple-400 font-mono">NISA/iDeCo</span>
+          </div>
+          <div className="text-xl font-bold text-purple-400 font-mono">
+            {formatVal(useCashflowStore.getState().getTotalInvestments())}
+          </div>
+        </div>
+
+        {/* Total Capital Inflow */}
+        <div className="bg-zinc-900/50 border border-cyan-500/30 bg-cyan-950/10 rounded-2xl p-4 backdrop-blur-md">
+          <div className="flex items-center justify-between text-xs text-zinc-400 mb-1">
+            <span className="flex items-center">
+              월 실질 자본 적립액
+              <Tooltip content="매월 자산으로 직접 유입되는 저축 + 투자 + 순잉여금 전체 금액입니다. 이 속도로 자산 시뮬레이션이 연산됩니다." />
+            </span>
+            <span className="text-[10px] text-cyan-400 font-mono">시뮬레이션</span>
+          </div>
+          <div className="text-xl font-extrabold text-cyan-400 font-mono">
+            {formatVal(useCashflowStore.getState().getTotalCapitalInflow())}
           </div>
         </div>
       </div>
@@ -276,15 +303,29 @@ export default function RunwaySection() {
                 <option value="식비">🍚 식비 (장보기/외식)</option>
                 <option value="고정비">⚡ 통신·고정비 (보험/구독)</option>
                 <option value="여가">🎮 여가·취미 (자기계발)</option>
-                <option value="투자">📈 투자·저축 (NISA/적립)</option>
-                <option value="기타">📦 기타 지출</option>
+                <option value="교통">🚃 교통비 (대중교통/패스)</option>
+                <option value="기타">📦 기타 소비</option>
               </select>
+            ) : type === 'SAVINGS' ? (
+              <input
+                type="text"
+                disabled
+                value="🏦 저축 (안전자산)"
+                className="bg-zinc-950/50 border border-zinc-800/50 rounded-xl px-3 py-2 text-indigo-400 font-medium"
+              />
+            ) : type === 'INVESTMENT' ? (
+              <input
+                type="text"
+                disabled
+                value="📈 투자 (성장자산)"
+                className="bg-zinc-950/50 border border-zinc-800/50 rounded-xl px-3 py-2 text-purple-400 font-medium"
+              />
             ) : (
               <input
                 type="text"
                 disabled
-                value="수입 항목"
-                className="bg-zinc-950/50 border border-zinc-800/50 rounded-xl px-3 py-2 text-zinc-500"
+                value="💰 수입 항목"
+                className="bg-zinc-950/50 border border-zinc-800/50 rounded-xl px-3 py-2 text-emerald-400 font-medium"
               />
             )}
             <input

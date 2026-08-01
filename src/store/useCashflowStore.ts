@@ -10,8 +10,11 @@ interface CashflowStore {
   updateItem: (id: string, updated: Partial<CashflowItem>) => void;
   getTotalIncome: () => number;
   getTotalExpense: () => number;
+  getTotalSavings: () => number;
+  getTotalInvestments: () => number;
   getEssentialExpense: () => number;
   getNetSurplus: () => number;
+  getTotalCapitalInflow: () => number; // 저축 + 투자 + 순잉여금 (실질 자산 증식 유입액)
   getCategoryExpenses: () => { category: string; amount: number }[];
 }
 
@@ -45,23 +48,31 @@ const INITIAL_CASHFLOWS: CashflowItem[] = [
     title: '식비 · 생활용품 · 교통비',
     type: 'EXPENSE_FIXED',
     amount: 80000,       // 월 8만엔
-    category: '생활',
+    category: '식비',
     isEssential: true,
   },
   {
     id: 'cf-5',
-    title: '신NISA 적립 · iDeCo 납입',
-    type: 'EXPENSE_FIXED',
-    amount: 50000,       // 월 5만엔 (투투자 적립)
-    category: '투자',
+    title: '비상금 / 예금 적금 저축',
+    type: 'SAVINGS',
+    amount: 50000,       // 월 5만엔 (안전저축)
+    category: '저축',
     isEssential: true,
   },
   {
     id: 'cf-6',
+    title: '신NISA 적립 · iDeCo 납입',
+    type: 'INVESTMENT',
+    amount: 60000,       // 월 6만엔 (자산투자)
+    category: '투자',
+    isEssential: true,
+  },
+  {
+    id: 'cf-7',
     title: '자기계발 · 취미 · 여가',
     type: 'EXPENSE_VARIABLE',
-    amount: 40000,       // 월 4만엔
-    category: '가치지출',
+    amount: 40000,       // 월 4만엔 (소비)
+    category: '여가',
     isEssential: false,
   },
 ];
@@ -120,6 +131,16 @@ export const useCashflowStore = create<CashflowStore>()(
           .filter((i) => i.type === 'EXPENSE_FIXED' || i.type === 'EXPENSE_VARIABLE')
           .reduce((sum, i) => sum + i.amount, 0),
 
+      getTotalSavings: () =>
+        get().items
+          .filter((i) => i.type === 'SAVINGS')
+          .reduce((sum, i) => sum + i.amount, 0),
+
+      getTotalInvestments: () =>
+        get().items
+          .filter((i) => i.type === 'INVESTMENT')
+          .reduce((sum, i) => sum + i.amount, 0),
+
       getEssentialExpense: () =>
         get().items
           .filter(
@@ -130,7 +151,10 @@ export const useCashflowStore = create<CashflowStore>()(
           .reduce((sum, i) => sum + i.amount, 0),
 
       getNetSurplus: () =>
-        get().getTotalIncome() - get().getTotalExpense(),
+        get().getTotalIncome() - get().getTotalExpense() - get().getTotalSavings() - get().getTotalInvestments(),
+
+      getTotalCapitalInflow: () =>
+        get().getTotalSavings() + get().getTotalInvestments() + Math.max(0, get().getNetSurplus()),
 
       getCategoryExpenses: () => {
         const expenses = get().items.filter(

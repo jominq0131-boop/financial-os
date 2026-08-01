@@ -83,8 +83,10 @@ export default function EditCashflowModal({ isOpen, onClose, item }: EditCashflo
               >
                 <option value="INCOME_ACTIVE">근로/사업 수입</option>
                 <option value="INCOME_PASSIVE">배당/자산 수입</option>
-                <option value="EXPENSE_FIXED">고정 지출</option>
-                <option value="EXPENSE_VARIABLE">변동/가치 지출</option>
+                <option value="EXPENSE_FIXED">고정 소비 지출</option>
+                <option value="EXPENSE_VARIABLE">변동/여가 소비 지출</option>
+                <option value="SAVINGS">안전 자산 저축</option>
+                <option value="INVESTMENT">성장 자산 투자</option>
               </select>
             </div>
 
@@ -97,8 +99,10 @@ export default function EditCashflowModal({ isOpen, onClose, item }: EditCashflo
               >
                 <option value="주거">주거 (월세/공과금)</option>
                 <option value="식비">식비 (장보기/외식)</option>
-                <option value="고정비">고정비 (통신/수수료)</option>
+                <option value="고정비">고정비 (통신/구독)</option>
                 <option value="여가">여가 (취미/자기계발)</option>
+                <option value="교통">교통 (대중교통/패스)</option>
+                <option value="저축">저축 (예·적금)</option>
                 <option value="투자">투자 (NISA/적립)</option>
                 <option value="기타">기타</option>
                 <option value="급여">급여 (수입)</option>

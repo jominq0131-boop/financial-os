@@ -22,7 +22,7 @@ import { useSettingsStore } from '@/store/useSettingsStore';
 
 export default function ForecastChart() {
   const { getTotalNetWorth, isPrivate } = useAssetStore();
-  const { getNetSurplus } = useCashflowStore();
+  const { getTotalCapitalInflow } = useCashflowStore();
   const { events } = useTimelineStore();
   const { currentAge } = useSettingsStore();
 
@@ -30,12 +30,12 @@ export default function ForecastChart() {
   const [inflationRate, setInflationRate] = useState(2.0); // 기본 2%
 
   const totalNetWorth = getTotalNetWorth();
-  const annualSurplus = getNetSurplus() * 12; // 월 잉여금 * 12
+  const annualCapitalInflow = getTotalCapitalInflow() * 12; // 월 실질 자본 적립액 (저축+투자+잉여금) * 12
 
   const simulationData = run50YearSimulation(
     currentAge,
     totalNetWorth,
-    annualSurplus,
+    annualCapitalInflow,
     expectedYield,
     inflationRate,
     events

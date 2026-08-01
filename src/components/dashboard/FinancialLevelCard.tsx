@@ -40,7 +40,7 @@ export default function FinancialLevelCard() {
   const prevUnlockedRef = useRef<number>(0);
   const isHydrated = useHydrated();
   const { getTotalNetWorth, getNisaTotal, isPrivate } = useAssetStore();
-  const { getTotalIncome, getNetSurplus, getEssentialExpense } = useCashflowStore();
+  const { getTotalIncome, getTotalCapitalInflow, getEssentialExpense } = useCashflowStore();
   const { emergencyFundMonths, fireTarget, nisaAnnualLimit } = useSettingsStore();
 
   const totalNetWorth = getTotalNetWorth();
@@ -54,8 +54,8 @@ export default function FinancialLevelCard() {
   const nisaTotal = getNisaTotal();
 
   const totalIncome = getTotalIncome();
-  const netSurplus = getNetSurplus();
-  const surplusRate = totalIncome > 0 ? (netSurplus / totalIncome) * 100 : 0;
+  const capitalInflow = getTotalCapitalInflow();
+  const surplusRate = totalIncome > 0 ? (capitalInflow / totalIncome) * 100 : 0;
 
   // Find Current Base Level from Assets
   let baseLevelIndex = 0;
