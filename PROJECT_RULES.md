@@ -16,9 +16,11 @@
        ↓
 ③ 빌드 및 타입 검증 (cmd /c npm run build) — 오류 없을 때까지 반복
        ↓
-④ 문서 최신화 (README.md / ROADMAP.md / TODO.md / CHANGELOG.md)
+④ 문서 최신화 (README.md / ROADMAP.md / TODO.md / CHANGELOG.md / PROJECT_RULES.md)
        ↓
 ⑤ git add . → git commit → git push origin main  ← 반드시 자동 수행
+       ↓
+⑥ [필수] 사용자에게 작업 결과 보고 및 다음 개선/개발 활동 추천 (선택 옵션 제시)
 ```
 
 > **⚠️ 중요**: 빌드 성공 여부와 관계없이 작업을 마칠 때마다 **반드시** `git add . && git commit && git push origin main`을 실행합니다. 사용자가 별도로 요청하지 않아도 매번 자동으로 완료해야 합니다.
@@ -61,7 +63,7 @@ cmd /c git push origin main
    - 임의로 `₩`, `toLocaleString('ko-KR')` 단독 사용은 금지합니다.
 
 3. **Local-First & 영구 데이터 저장 (Persistence)**
-   - Zustand `persist` 미들웨어를 통해 모든 데이터(`assets`, `cashflow`, `timeline`, `history`)를 브라우저 `localStorage`에 영구 보존합니다.
+   - Zustand `persist` 미들웨어를 통해 모든 데이터(`assets`, `cashflow`, `timeline`, `history`, `settings`, `snapshots`)를 브라우저 `localStorage`에 영구 보존합니다.
    - 자산/현금흐름/이벤트 추가·수정·삭제 시 `useHistoryStore`를 통해 변경 이력을 자동 기록합니다.
    - JSON 백업(Export) 및 복원(Import) 기능을 항상 유지합니다.
 
@@ -73,10 +75,13 @@ cmd /c git push origin main
    - 모든 자산 카테고리, 버킷 Tier, 주요 지표 옆에는 `<Tooltip>` 컴포넌트를 배치하여 무엇을 의미하는지 설명합니다.
    - `Tooltip`은 `src/components/common/Tooltip.tsx`를 공통 컴포넌트로 사용합니다.
 
-6. **코드 품질 & 프리미엄 UI**
+6. **프로덕션 수준 클린 아키텍처 & 프리미엄 UI**
+   - 개발자 사용자가 아키텍처 수준을 검증할 수 있도록 모듈화된 폴더 구조(`domain components`, `store`, `engine`, `hooks`, `types`)와 Clean Architecture 관례를 준수합니다.
    - Apple Health 스타일의 glassmorphism 다크 UI를 기준으로 합니다.
    - 금액 마스킹(Privacy Mode `👁️`/`🙈`) 기능을 전 컴포넌트에 일관 적용합니다.
-   - 타입 안전성을 위해 TypeScript strict 모드를 준수합니다.
+
+7. **[강제] 작업 완결 시 다음 활동 의무 추천 (Mandatory Next Activity Recommendation)**
+   - **모든 작업 완료 후 항상 사용자에게 다음에 추가하거나 개선할 수 있는 구체적인 기능/개선점 추천 목록(옵션 2~4개)을 제시하여 컨펌을 받습니다.**
 
 ---
 
