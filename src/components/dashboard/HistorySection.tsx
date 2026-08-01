@@ -5,6 +5,10 @@ import { useHistoryStore } from '@/store/useHistoryStore';
 import { useAssetStore } from '@/store/useAssetStore';
 import { useCashflowStore } from '@/store/useCashflowStore';
 import { useTimelineStore } from '@/store/useTimelineStore';
+import { useSnapshotStore } from '@/store/useSnapshotStore';
+import { useMonthlySpendingStore } from '@/store/useMonthlySpendingStore';
+import { useRoutineStore } from '@/store/useRoutineStore';
+import { useSettingsStore } from '@/store/useSettingsStore';
 import { useHydrated } from '@/hooks/useHydrated';
 import Tooltip from '@/components/common/Tooltip';
 import { History, Download, Upload, Trash2, Clock, Activity } from 'lucide-react';
@@ -30,15 +34,25 @@ export default function HistorySection() {
     }
   };
 
-  // Export JSON Backup
+  // Export JSON Backup (Full All Stores Backup)
   const handleExportData = () => {
     const backupData = {
-      version: '1.1.0',
+      version: '1.2.0',
       exportedAt: new Date().toISOString(),
       assets: useAssetStore.getState().assets,
       cashflow: useCashflowStore.getState().items,
       timeline: useTimelineStore.getState().events,
       history: useHistoryStore.getState().logs,
+      snapshots: useSnapshotStore.getState().snapshots,
+      spendingRecords: useMonthlySpendingStore.getState().records,
+      routineRecords: useRoutineStore.getState().records,
+      settings: {
+        currentAge: useSettingsStore.getState().currentAge,
+        emergencyFundMonths: useSettingsStore.getState().emergencyFundMonths,
+        useIdeCo: useSettingsStore.getState().useIdeCo,
+        fireTarget: useSettingsStore.getState().fireTarget,
+        nisaAnnualLimit: useSettingsStore.getState().nisaAnnualLimit,
+      },
     };
 
     const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
@@ -63,15 +77,21 @@ export default function HistorySection() {
         if (data.cashflow) useCashflowStore.setState({ items: data.cashflow });
         if (data.timeline) useTimelineStore.setState({ events: data.timeline });
         if (data.history) useHistoryStore.setState({ logs: data.history });
+        if (data.snapshots) useSnapshotStore.setState({ snapshots: data.snapshots });
+        if (data.spendingRecords) useMonthlySpendingStore.setState({ records: data.spendingRecords });
+        if (data.routineRecords) useRoutineStore.setState({ records: data.routineRecords });
+        if (data.settings) {
+          useSettingsStore.getState().updateSettings(data.settings);
+        }
 
         useHistoryStore.getState().addLog({
           type: 'SYSTEM',
           action: 'ADD',
-          title: '백업 데이터 복원 완료',
-          detail: 'JSON 백업 파일로부터 데이터가 정상적으로 복원되었습니다.',
+          title: '전체 데이터 백업 복원 완료',
+          detail: '스냅샷, 지출 기록, FIRE 루틴을 포함한 전체 데이터가 정상 복원되었습니다.',
         });
 
-        alert('데이터 복원이 완료되었습니다.');
+        alert('모든 백업 데이터(스냅샷, 지출기록, 루틴 포함) 복원이 완료되었습니다.');
       } catch (err) {
         alert('올바른 백업 JSON 파일 형식이 아닙니다.');
       }
