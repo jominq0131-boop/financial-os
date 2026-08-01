@@ -246,7 +246,7 @@ export default function RunwaySection() {
       {showAddForm && (
         <form onSubmit={handleAddSubmit} className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 space-y-4 animate-fade-in">
           <h4 className="text-sm font-bold text-white">현금 흐름 항목 추가</h4>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
             <input
               type="text"
               placeholder="항목명 (예: 월급, 월세, 통신비)"
@@ -258,7 +258,7 @@ export default function RunwaySection() {
             <select
               value={type}
               onChange={(e) => setType(e.target.value as CashflowType)}
-              className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:outline-none"
+              className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:outline-none font-medium"
             >
               {Object.entries(CASHFLOW_TYPE_LABELS).map(([key, item]) => (
                 <option key={key} value={key}>
@@ -266,12 +266,33 @@ export default function RunwaySection() {
                 </option>
               ))}
             </select>
+            {(type === 'EXPENSE_FIXED' || type === 'EXPENSE_VARIABLE') ? (
+              <select
+                value={categoryInput}
+                onChange={(e) => setCategoryInput(e.target.value)}
+                className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white focus:outline-none font-medium"
+              >
+                <option value="주거">🏠 주거비 (월세/공과금)</option>
+                <option value="식비">🍚 식비 (장보기/외식)</option>
+                <option value="고정비">⚡ 통신·고정비 (보험/구독)</option>
+                <option value="여가">🎮 여가·취미 (자기계발)</option>
+                <option value="투자">📈 투자·저축 (NISA/적립)</option>
+                <option value="기타">📦 기타 지출</option>
+              </select>
+            ) : (
+              <input
+                type="text"
+                disabled
+                value="수입 항목"
+                className="bg-zinc-950/50 border border-zinc-800/50 rounded-xl px-3 py-2 text-zinc-500"
+              />
+            )}
             <input
               type="number"
               placeholder="월 엔화 금액 (예: 85000)"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white placeholder-zinc-600 focus:outline-none"
+              className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white placeholder-zinc-600 focus:outline-none font-mono"
               required
             />
           </div>
@@ -297,12 +318,15 @@ export default function RunwaySection() {
       <div className="space-y-2">
         {items.map((item) => {
           const info = CASHFLOW_TYPE_LABELS[item.type];
+          const catName = item.category || '기타';
+          const catColor = EXPENSE_CATEGORY_COLORS[catName] || '#71717a';
+
           return (
             <div
               key={item.id}
               className="flex items-center justify-between bg-zinc-900/40 border border-zinc-800/60 rounded-xl px-4 py-3 hover:border-zinc-700 transition group"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-wrap">
                 <span
                   className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${
                     info.isIncome
@@ -312,6 +336,15 @@ export default function RunwaySection() {
                 >
                   {info.label}
                 </span>
+
+                {/* Category Badge */}
+                <span
+                  className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-zinc-950 border border-zinc-800 text-zinc-300 flex items-center gap-1 font-mono"
+                  style={{ color: catColor }}
+                >
+                  ● {catName}
+                </span>
+
                 <span className="text-sm font-medium text-white">{item.title}</span>
               </div>
 

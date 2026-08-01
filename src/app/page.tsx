@@ -141,8 +141,8 @@ export default function Home() {
                     />
                   </div>
                   <div className="flex justify-between text-[11px] text-zinc-400">
-                    <span>달성: {fmtShort(totalNetWorth)}</span>
-                    <span>목표: {fmtShort(fireTarget)}</span>
+                    <span>달성: {formatJPY(totalNetWorth)}</span>
+                    <span>목표: {formatJPY(fireTarget)}</span>
                   </div>
                 </div>
 
@@ -182,8 +182,8 @@ export default function Home() {
                     />
                   </div>
                   <div className="flex justify-between text-[11px] text-zinc-400">
-                    <span>적립: {fmtShort(nisaContributed)}</span>
-                    <span>한도: {fmtShort(nisaAnnualLimit)}</span>
+                    <span>적립: {formatJPY(nisaContributed)}</span>
+                    <span>한도: {formatJPY(nisaAnnualLimit)}</span>
                   </div>
                 </div>
               </section>
