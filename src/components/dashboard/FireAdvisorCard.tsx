@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { NISA_LIFETIME_LIMIT } from '@/constants/finance';
 import { useAssetStore } from '@/store/useAssetStore';
 import { useCashflowStore } from '@/store/useCashflowStore';
 import { useSettingsStore } from '@/store/useSettingsStore';
@@ -158,11 +159,11 @@ export default function FireAdvisorCard() {
           <div className="w-full bg-zinc-900 h-2 rounded-full overflow-hidden">
             <div
               className="bg-purple-400 h-full rounded-full transition-all duration-500"
-              style={{ width: `${Math.min(100, (nisaTotal / 18000000) * 100)}%` }}
+              style={{ width: `${Math.min(100, (nisaTotal / NISA_LIFETIME_LIMIT) * 100)}%` }}
             />
           </div>
           <p className="text-[11px] text-zinc-400 pt-0.5">
-            생애 비과세 한도 1,800만 엔 중 {((nisaTotal / 18000000) * 100).toFixed(1)}% 달성
+            생애 비과세 한도 1,800만 엔 중 {((nisaTotal / NISA_LIFETIME_LIMIT) * 100).toFixed(1)}% 달성
           </p>
         </div>
       </div>

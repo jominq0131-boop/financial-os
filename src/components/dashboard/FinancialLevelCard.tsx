@@ -9,6 +9,7 @@ import Tooltip from '@/components/common/Tooltip';
 import ConfettiOverlay from '@/components/common/ConfettiOverlay';
 import { formatJPY, formatJPYShort } from '@/utils/currency';
 import { ShieldCheck, Award, Flame, Zap, Trophy, Crown, CheckCircle2, Lock } from 'lucide-react';
+import { NISA_LIFETIME_LIMIT } from '@/constants/finance';
 
 // Progressive Level Thresholds Table (엔화 JPY 기준 레벨 구간)
 const LEVEL_THRESHOLDS = [
@@ -28,7 +29,7 @@ const LEVEL_THRESHOLDS = [
   { level: 14, amount: 10000000, title: '🏆 8자리 자본가 (10M Capitalist)' },
   { level: 15, amount: 12500000, title: '🏆 FIRE 쿼터백 (FIRE Quarter Master)' },
   { level: 16, amount: 15000000, title: '👑 파이어 마스터 (FIRE Master)' },
-  { level: 17, amount: 18000000, title: '👑 NISA 완주자 (NISA Lifetime Master)' },
+  { level: 17, amount: NISA_LIFETIME_LIMIT, title: '👑 NISA 완주자 (NISA Lifetime Master)' },
   { level: 18, amount: 22000000, title: '⚡ 타이쿤 커맨더 (Tycoon Commander)' },
   { level: 19, amount: 26000000, title: '👑 FIRE 파이오니어 (FIRE Pioneer)' },
   { level: 20, amount: 30000000, title: '👑 파이어 커맨더 (FIRE Commander)' },

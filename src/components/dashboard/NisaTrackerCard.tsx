@@ -6,6 +6,7 @@ import { useHydrated } from '@/hooks/useHydrated';
 import { formatJPY, formatJPYShort } from '@/utils/currency';
 import Tooltip from '@/components/common/Tooltip';
 import { Sparkles, ShieldCheck } from 'lucide-react';
+import { NISA_LIFETIME_LIMIT } from '@/constants/finance';
 
 export default function NisaTrackerCard() {
   const isHydrated = useHydrated();
@@ -14,7 +15,7 @@ export default function NisaTrackerCard() {
   // 실제 자산 데이터에서 동적으로 NISA 잔액 집계
   const nisaContributed = getNisaTotal();
   const annualLimit = 3600000; // 연간 한도 360만 엔 (성장 240만 + 적립 120만)
-  const lifetimeLimit = 18000000; // 생애 한도 1,800만 엔
+  const lifetimeLimit = NISA_LIFETIME_LIMIT; // 생애 한도 1,800만 엔
 
   const annualProgress = Math.min(100, Number(((nisaContributed / annualLimit) * 100).toFixed(1)));
   const lifetimeProgress = Math.min(100, Number(((nisaContributed / lifetimeLimit) * 100).toFixed(1)));
