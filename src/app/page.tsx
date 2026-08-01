@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { useAssetStore } from '@/store/useAssetStore';
+import { useHydrated } from '@/hooks/useHydrated';
+import Tooltip from '@/components/common/Tooltip';
 import AssetSection from '@/components/dashboard/AssetSection';
 import RunwaySection from '@/components/dashboard/RunwaySection';
 import BucketSection from '@/components/dashboard/BucketSection';
@@ -15,6 +17,7 @@ import { formatJPY, formatJPYShort } from '@/utils/currency';
 import { Eye, EyeOff, ShieldCheck, RefreshCw } from 'lucide-react';
 
 export default function Home() {
+  const isHydrated = useHydrated();
   const { getTotalNetWorth, getMonthlyDividend, isPrivate, togglePrivacy, resetToDefault } = useAssetStore();
 
   const totalNetWorth = getTotalNetWorth();
@@ -29,7 +32,17 @@ export default function Home() {
   const fireTarget = 50000000;
   const fireProgress = Math.min(100, Number(((totalNetWorth / fireTarget) * 100).toFixed(1)));
 
-  const fmt = (v: number) => (isPrivate ? '￥ ••••••' : formatJPY(v));
+  const fmt = (v: number) => {
+    if (!isHydrated) return '￥ 0';
+    if (isPrivate) return '￥ ••••••••';
+    return formatJPY(v);
+  };
+
+  const fmtShort = (v: number) => {
+    if (!isHydrated) return '0 엔';
+    if (isPrivate) return '••••';
+    return formatJPYShort(v);
+  };
 
   return (
     <div className="min-h-screen bg-black text-zinc-100 p-6 md:p-12 font-sans selection:bg-zinc-800">
@@ -79,7 +92,10 @@ export default function Home() {
           {/* Card 1: 총자산 */}
           <div className="group relative bg-zinc-900/60 border border-zinc-800/80 rounded-3xl p-6 hover:border-zinc-700 transition-all duration-300 backdrop-blur-xl">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-zinc-400">총 순자산 (Net Worth)</span>
+              <span className="text-sm font-medium text-zinc-400 flex items-center">
+                총 순자산 (Net Worth)
+                <Tooltip content="등록된 현금, 주식, 연금, 부동산 등 모든 엔화(JPY ￥) 자산 계좌의 실시간 합계액입니다." />
+              </span>
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 실시간 집계
               </span>
@@ -89,7 +105,7 @@ export default function Home() {
                 {fmt(totalNetWorth)}
               </div>
               <p className="text-xs text-zinc-400">
-                {isPrivate ? '' : `≈ ${formatJPYShort(totalNetWorth)} — 전체 계좌 합산`}
+                {isPrivate ? '' : `≈ ${fmtShort(totalNetWorth)} — 전체 계좌 합산`}
               </p>
             </div>
           </div>
@@ -97,19 +113,22 @@ export default function Home() {
           {/* Card 2: FIRE진척도 */}
           <div className="group relative bg-zinc-900/60 border border-zinc-800/80 rounded-3xl p-6 hover:border-zinc-700 transition-all duration-300 backdrop-blur-xl">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-zinc-400">FIRE 조기은퇴 진척도</span>
-              <span className="text-sm font-bold text-amber-400">{fireProgress}%</span>
+              <span className="text-sm font-medium text-zinc-400 flex items-center">
+                FIRE 조기은퇴 진척도
+                <Tooltip content="자산의 연 4%를 인출하여 생활비(연 200만 엔 등)를 충당하는 은퇴 목표 자금(5,000만 엔) 대비 달성률입니다." />
+              </span>
+              <span className="text-sm font-bold text-amber-400">{nisaProgress ? fireProgress : 0}%</span>
             </div>
             <div className="space-y-3">
               <div className="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-amber-500 to-orange-400 h-full rounded-full transition-all duration-500"
-                  style={{ width: `${fireProgress}%` }}
+                  style={{ width: `${isHydrated ? fireProgress : 0}%` }}
                 />
               </div>
               <div className="flex justify-between text-xs text-zinc-400">
-                <span>달성: {isPrivate ? '••••' : formatJPYShort(totalNetWorth)}</span>
-                <span>목표: 5,000만엔 (4% 룰 기준)</span>
+                <span>달성: {isPrivate ? '••••' : fmtShort(totalNetWorth)}</span>
+                <span>목표: 5,000만 엔 (4% 룰 기준)</span>
               </div>
             </div>
           </div>
@@ -117,7 +136,10 @@ export default function Home() {
           {/* Card 3: 월간 불로소득 */}
           <div className="group relative bg-zinc-900/60 border border-zinc-800/80 rounded-3xl p-6 hover:border-zinc-700 transition-all duration-300 backdrop-blur-xl">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-zinc-400">월간 배당/불로소득 추정</span>
+              <span className="text-sm font-medium text-zinc-400 flex items-center">
+                월간 배당/불로소득 추정
+                <Tooltip content="총 자산을 연 4% 인출 규칙으로 운용할 때 매월 안전하게 발생하거나 인출할 수 있는 월별 자가배당 소득입니다." />
+              </span>
               <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
                 연 4% 룰
               </span>
@@ -134,19 +156,22 @@ export default function Home() {
           {/* Card 4: 신NISA 연간진척 */}
           <div className="group relative bg-zinc-900/60 border border-zinc-800/80 rounded-3xl p-6 hover:border-zinc-700 transition-all duration-300 backdrop-blur-xl">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-zinc-400">신NISA 연간 한도 소진율</span>
-              <span className="text-sm font-bold text-purple-400">{nisaProgress}%</span>
+              <span className="text-sm font-medium text-zinc-400 flex items-center">
+                신NISA 연간 한도 소진율
+                <Tooltip content="일본 신NISA 제도의 연간 납입 한도인 360만 엔(성장투자틀 240만엔 + 적립틀 120만엔) 대비 적립 비율입니다." />
+              </span>
+              <span className="text-sm font-bold text-purple-400">{isHydrated ? nisaProgress : 0}%</span>
             </div>
             <div className="space-y-3">
               <div className="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-indigo-500 to-purple-400 h-full rounded-full transition-all duration-500"
-                  style={{ width: `${nisaProgress}%` }}
+                  style={{ width: `${isHydrated ? nisaProgress : 0}%` }}
                 />
               </div>
               <div className="flex justify-between text-xs text-zinc-400">
-                <span>적립: {isPrivate ? '••••' : '295만엔'}</span>
-                <span>연간한도: 360만엔</span>
+                <span>적립: {isPrivate ? '••••' : '295만 엔'}</span>
+                <span>연간한도: 360만 엔</span>
               </div>
             </div>
           </div>
@@ -181,7 +206,7 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="pt-6 border-t border-zinc-800/60 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-400 gap-2">
-          <span>Financial OS v1.0 · Japan Edition (일본 거주 한국인 전용)</span>
+          <span>Financial OS v1.1 · Japan Edition (일본 거주 한국인 전용)</span>
           <span>Privacy-First · Local Persistent · 신NISA / iDeCo 엔화 지원</span>
         </footer>
       </main>

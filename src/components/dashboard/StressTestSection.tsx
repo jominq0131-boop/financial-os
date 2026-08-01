@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { useAssetStore } from '@/store/useAssetStore';
 import { useCashflowStore } from '@/store/useCashflowStore';
 import { runStressTestScenario, StressScenario } from '@/engine/stressTestEngine';
+import { formatJPY } from '@/utils/currency';
+import Tooltip from '@/components/common/Tooltip';
 import { ShieldAlert, AlertTriangle, Zap, CheckCircle } from 'lucide-react';
 
 export default function StressTestSection() {
@@ -19,9 +21,9 @@ export default function StressTestSection() {
 
   const result = runStressTestScenario(activeScenario, assets, essentialExpense, passiveIncome);
 
-  const formatCurrency = (val: number) => {
-    if (isPrivate) return '••••••••';
-    return `₩ ${val.toLocaleString()}`;
+  const formatVal = (val: number) => {
+    if (isPrivate) return '￥ ••••••••';
+    return formatJPY(val);
   };
 
   const getRiskBadge = (rating: string) => {
@@ -49,9 +51,10 @@ export default function StressTestSection() {
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <ShieldAlert className="w-5 h-5 text-rose-400" />
             위기 대응 스트레스 테스트 (Stress Test Simulator)
+            <Tooltip content="시장 주식 -30% 폭락, 인플레이션 급등(+25%), 소득 중단 등 위기 상황 발생 시 자산 손실 충격액 및 생존 기간(Runway) 변화를 조율하는 시뮬레이터입니다." />
           </h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            시장 폭락(-30%), 인플레이션 급등, 복합 위기 시 내 재정 방어력 시뮬레이션
+            시장 폭락(-30%), 인플레이션 급등, 복합 위기 시 내 재정 방어력 시뮬레이션 (엔화 ￥ 기준)
           </p>
         </div>
       </div>
@@ -134,7 +137,7 @@ export default function StressTestSection() {
             <div className="text-left md:text-right">
               <span className="text-xs text-zinc-400">예상 자산 손실 충격액</span>
               <div className="text-lg font-bold text-rose-400 font-mono">
-                -{formatCurrency(result.netWorthLoss)}
+                -{formatVal(result.netWorthLoss)}
               </div>
             </div>
           )}
@@ -146,7 +149,7 @@ export default function StressTestSection() {
           <div className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-4">
             <span className="text-xs text-zinc-400 block mb-1">위기 발생 후 변동 순자산</span>
             <div className="text-2xl font-extrabold text-white font-mono">
-              {formatCurrency(result.adjustedNetWorth)}
+              {formatVal(result.adjustedNetWorth)}
             </div>
           </div>
 

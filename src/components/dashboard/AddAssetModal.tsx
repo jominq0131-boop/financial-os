@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useAssetStore } from '@/store/useAssetStore';
-import { AssetCategory, BucketTier, CATEGORY_LABELS } from '@/types/asset';
+import { AssetCategory, BucketTier, CATEGORY_LABELS, TIER_LABELS } from '@/types/asset';
+import Tooltip from '@/components/common/Tooltip';
 import { X } from 'lucide-react';
 
 interface AddAssetModalProps {
@@ -44,7 +45,7 @@ export default function AddAssetModal({ isOpen, onClose }: AddAssetModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-fade-in">
       <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl space-y-6">
         <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
-          <h2 className="text-xl font-bold text-white">새 자산 추가</h2>
+          <h2 className="text-xl font-bold text-white">신규 자산 추가</h2>
           <button
             onClick={onClose}
             className="p-1 rounded-full text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
@@ -55,10 +56,13 @@ export default function AddAssetModal({ isOpen, onClose }: AddAssetModalProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4 text-sm">
           <div>
-            <label className="block text-zinc-400 mb-1 font-medium">자산명</label>
+            <label className="block text-zinc-400 mb-1 font-medium flex items-center">
+              자산명
+              <Tooltip content="예: 미국 S&P500 ETF, 비상금 보통예금, 신NISA 올컨트리 등 보유 자산 이름을 입력하세요." />
+            </label>
             <input
               type="text"
-              placeholder="예: 미국 S&P500 ETF, 비상금 통장"
+              placeholder="예: 미국 S&P500 ETF, 비상금 보통예금"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600"
@@ -68,7 +72,10 @@ export default function AddAssetModal({ isOpen, onClose }: AddAssetModalProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-zinc-400 mb-1 font-medium">자산 카테고리</label>
+              <label className="block text-zinc-400 mb-1 font-medium flex items-center">
+                자산 카테고리
+                <Tooltip content={CATEGORY_LABELS[category].description} />
+              </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as AssetCategory)}
@@ -83,7 +90,10 @@ export default function AddAssetModal({ isOpen, onClose }: AddAssetModalProps) {
             </div>
 
             <div>
-              <label className="block text-zinc-400 mb-1 font-medium">버킷 분류 (Tier)</label>
+              <label className="block text-zinc-400 mb-1 font-medium flex items-center">
+                버킷 분류 (Tier)
+                <Tooltip content={TIER_LABELS[tier].description} />
+              </label>
               <select
                 value={tier}
                 onChange={(e) => setTier(e.target.value as BucketTier)}
@@ -98,10 +108,13 @@ export default function AddAssetModal({ isOpen, onClose }: AddAssetModalProps) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-zinc-400 mb-1 font-medium">평가 금액 (원)</label>
+              <label className="block text-zinc-400 mb-1 font-medium flex items-center">
+                평가 금액 (엔 / JPY)
+                <Tooltip content="현재 자산의 엔화(JPY ￥) 평가 금액을 숫자만 입력하세요." />
+              </label>
               <input
                 type="number"
-                placeholder="0"
+                placeholder="엔화 금액 (예: 1000000)"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-2.5 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600"
@@ -110,7 +123,10 @@ export default function AddAssetModal({ isOpen, onClose }: AddAssetModalProps) {
             </div>
 
             <div>
-              <label className="block text-zinc-400 mb-1 font-medium">기대 수익률 (%)</label>
+              <label className="block text-zinc-400 mb-1 font-medium flex items-center">
+                기대 수익률 (%)
+                <Tooltip content="연간 예상 투자 수익률 또는 배당 수익률 (%)을 입력하세요." />
+              </label>
               <input
                 type="number"
                 step="0.1"

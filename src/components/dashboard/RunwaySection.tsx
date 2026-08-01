@@ -5,6 +5,8 @@ import { useCashflowStore } from '@/store/useCashflowStore';
 import { useAssetStore } from '@/store/useAssetStore';
 import { calculateFinancialRunway } from '@/engine/runwayEngine';
 import { CASHFLOW_TYPE_LABELS, CashflowType } from '@/types/cashflow';
+import { formatJPY } from '@/utils/currency';
+import Tooltip from '@/components/common/Tooltip';
 import { Flame, Plus, Trash2, ArrowUpRight, ArrowDownRight, Activity } from 'lucide-react';
 
 export default function RunwaySection() {
@@ -52,9 +54,9 @@ export default function RunwaySection() {
     setShowAddForm(false);
   };
 
-  const formatCurrency = (val: number) => {
-    if (isPrivate) return '••••••••';
-    return `₩ ${val.toLocaleString()}`;
+  const formatVal = (val: number) => {
+    if (isPrivate) return '￥ ••••••••';
+    return formatJPY(val);
   };
 
   return (
@@ -65,22 +67,26 @@ export default function RunwaySection() {
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Flame className="w-5 h-5 text-amber-400 animate-bounce" />
-              <span className="text-xs uppercase tracking-widest text-zinc-400 font-mono">
+              <span className="text-xs uppercase tracking-widest text-zinc-400 font-mono flex items-center">
                 Financial Runway Status
+                <Tooltip content="소득이 끊겼을 때 보유 중인 현금성 안전 자산만으로 버틸 수 있는 생존 가능 기간입니다." />
               </span>
             </div>
             <h2 className="text-2xl md:text-3xl font-extrabold text-white">
               소득 중단 시 생존 가능 기간: <span className="text-cyan-400">{runwayResult.runwayYears}</span>
             </h2>
             <p className="text-xs text-zinc-400 max-w-xl">
-              {runwayResult.description} (기준 유동 자산: {formatCurrency(liquidAssets)})
+              {runwayResult.description} (기준 유동 자산: {formatVal(liquidAssets)})
             </p>
           </div>
 
           <div className="flex flex-col items-start md:items-end justify-center bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-4 min-w-[200px]">
-            <span className="text-xs text-zinc-400 font-medium mb-1">월 실질 순버닝 (Burn Rate)</span>
+            <span className="text-xs text-zinc-400 font-medium mb-1 flex items-center">
+              월 실질 순버닝 (Burn Rate)
+              <Tooltip content="매월 반드시 지출되는 필수 생활비에서 자동으로 발생하는 배당/패시브 소득을 뺀 실질 순지출액입니다." />
+            </span>
             <span className="text-xl font-bold text-rose-400 font-mono">
-              {formatCurrency(runwayResult.netBurnRate)} / 월
+              {formatVal(runwayResult.netBurnRate)} / 월
             </span>
             <span className="text-[11px] text-zinc-500 mt-1">필수 지출 - 패시브 배당</span>
           </div>
@@ -92,6 +98,7 @@ export default function RunwaySection() {
         <h3 className="text-lg font-bold text-white flex items-center gap-2">
           <Activity className="w-4 h-4 text-cyan-400" />
           월 현금 흐름 탱크 (Monthly Cashflow Tank)
+          <Tooltip content="수입과 지출의 월별 캐시플로우를 관리하여 순잉여금을 연산하는 모듈입니다." />
         </h3>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
@@ -107,33 +114,36 @@ export default function RunwaySection() {
         {/* Total Monthly Income */}
         <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-5 backdrop-blur-md">
           <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
-            <span>총 월 수입</span>
+            <span>총 월 수입 (근로 + 배당)</span>
             <ArrowUpRight className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="text-2xl font-bold text-emerald-400 font-mono">
-            {formatCurrency(totalIncome)}
+            {formatVal(totalIncome)}
           </div>
         </div>
 
         {/* Total Monthly Expense */}
         <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-5 backdrop-blur-md">
           <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
-            <span>총 월 지출 (필수+변동)</span>
+            <span>총 월 지출 (고정 + 변동)</span>
             <ArrowDownRight className="w-4 h-4 text-rose-400" />
           </div>
           <div className="text-2xl font-bold text-rose-400 font-mono">
-            {formatCurrency(totalExpense)}
+            {formatVal(totalExpense)}
           </div>
         </div>
 
         {/* Monthly Net Surplus */}
         <div className="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl p-5 backdrop-blur-md">
           <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
-            <span>월 순잉여금 (Net Surplus)</span>
+            <span className="flex items-center">
+              월 순잉여금 (Net Surplus)
+              <Tooltip content="월 수입에서 총 지출을 뺀 순 자축/투자 여력 금액입니다." />
+            </span>
             <span className="text-[10px] text-zinc-500 font-mono">잉여율 {totalIncome > 0 ? ((netSurplus / totalIncome) * 100).toFixed(0) : 0}%</span>
           </div>
           <div className="text-2xl font-bold text-cyan-400 font-mono">
-            {formatCurrency(netSurplus)}
+            {formatVal(netSurplus)}
           </div>
         </div>
       </div>
@@ -145,7 +155,7 @@ export default function RunwaySection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
             <input
               type="text"
-              placeholder="항목명 (예: 월급, 아파트 관리비)"
+              placeholder="항목명 (예: 월급, 월세, 통신비)"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white placeholder-zinc-600 focus:outline-none"
@@ -164,7 +174,7 @@ export default function RunwaySection() {
             </select>
             <input
               type="number"
-              placeholder="월 금액 (원)"
+              placeholder="월 엔화 금액 (예: 85000)"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               className="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white placeholder-zinc-600 focus:outline-none"
@@ -217,7 +227,7 @@ export default function RunwaySection() {
                     info.isIncome ? 'text-emerald-400' : 'text-zinc-200'
                   }`}
                 >
-                  {info.isIncome ? '+' : '-'}{formatCurrency(item.amount)}
+                  {info.isIncome ? '+' : '-'}{formatVal(item.amount)}
                 </span>
                 <button
                   onClick={() => deleteItem(item.id)}

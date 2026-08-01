@@ -1,37 +1,36 @@
 /**
- * Financial OS — Currency Utility (JPY Primary)
- * 日本円（JPY）をメイン通貨として使用
+ * 통화 및 수치 포맷팅 유틸리티 (일본 엔화 JPY ￥ 기준)
  */
-
-export type Currency = 'JPY' | 'USD' | 'EUR';
 
 /**
- * 金額を日本円表記にフォーマット
- * isPrivate が true の場合は金額をマスク
+ * 금액을 일본 엔화 ￥ 표기로 포맷팅
+ * isPrivate가 true인 경우 마스킹 처리
  */
-export function formatJPY(amount: number, isPrivate = false): string {
-  if (isPrivate) return '¥ ••••••';
-  return `¥ ${amount.toLocaleString('ja-JP')}`;
-}
+export const formatJPY = (amount: number): string => {
+  return `￥ ${Math.round(amount).toLocaleString('ko-KR')}`;
+};
 
 /**
- * 億円・万円単位の短縮表記
- * 例: 50,000,000 → "5,000万円"
+ * 억 엔 / 만 엔 단위 축약 표기
+ * 예: 50,000,000 -> "5,000만 엔"
+ * 예: 150,000,000 -> "1.5억 엔"
  */
-export function formatJPYShort(amount: number, isPrivate = false): string {
-  if (isPrivate) return '¥ ••••';
-  if (amount >= 100000000) {
-    return `${(amount / 100000000).toFixed(2)}億円`;
+export const formatJPYShort = (amount: number): string => {
+  if (Math.abs(amount) >= 100000000) {
+    return `${(amount / 100000000).toFixed(2)}억 엔`;
   }
-  if (amount >= 10000) {
-    return `${Math.round(amount / 10000).toLocaleString('ja-JP')}万円`;
+  if (Math.abs(amount) >= 10000) {
+    return `${Math.round(amount / 10000).toLocaleString('ko-KR')}만 엔`;
   }
-  return `¥${amount.toLocaleString('ja-JP')}`;
-}
+  return `￥ ${Math.round(amount).toLocaleString('ko-KR')}`;
+};
 
 /**
- * チャート表示用 (万円単位)
+ * 시각화 차트 축 표기용 (만 엔 / 억 엔 단위)
  */
-export function toManYen(amount: number): number {
-  return Number((amount / 10000).toFixed(1));
-}
+export const formatChartAxisJPY = (amount: number): string => {
+  if (Math.abs(amount) >= 100000000) {
+    return `${(amount / 100000000).toFixed(1)}억 엔`;
+  }
+  return `${Math.round(amount / 10000)}만 엔`;
+};

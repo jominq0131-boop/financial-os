@@ -5,6 +5,8 @@ import { useAssetStore } from '@/store/useAssetStore';
 import { useCashflowStore } from '@/store/useCashflowStore';
 import { useTimelineStore } from '@/store/useTimelineStore';
 import { run50YearSimulation } from '@/engine/simulationEngine';
+import { formatJPYShort } from '@/utils/currency';
+import TooltipHelp from '@/components/common/Tooltip';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -36,16 +38,16 @@ export default function ForecastChart() {
     events
   );
 
-  // 차트 렌더링용 데이터 변환 (억 원 단위)
+  // 차트 렌더링용 데이터 변환 (억 엔 단위)
   const chartData = simulationData.map((d) => ({
     ...d,
     netWorthIn100M: Number((d.netWorth / 100000000).toFixed(2)),
     labelAge: `${d.age}세`,
   }));
 
-  const formatCurrency = (val: number) => {
-    if (isPrivate) return '••••••••';
-    return `₩ ${(val / 100000000).toFixed(2)}억 원`;
+  const formatVal = (val: number) => {
+    if (isPrivate) return '￥ ••••••••';
+    return formatJPYShort(val);
   };
 
   return (
@@ -56,9 +58,10 @@ export default function ForecastChart() {
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-emerald-400" />
             50년 미래 자산 시뮬레이션 (Life Forecast Engine)
+            <TooltipHelp content="현재 자산, 월 순잉여금, 연간 투자수익률, 물가상승률 및 등록된 생애 마일스톤 지출을 복합 연산하여 50년간의 자산 곡선을 시뮬레이션합니다." />
           </h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            연간 잉여금 + 기대수익률 - 생애 미션 이벤트 지출을 반영한 장기 자산 곡선
+            연간 잉여금 + 기대수익률 - 생애 미션 이벤트 지출을 반영한 장기 자산 곡선 (엔화 ￥ 기준)
           </p>
         </div>
 
@@ -103,7 +106,7 @@ export default function ForecastChart() {
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
               <XAxis dataKey="labelAge" stroke="#71717a" fontSize={11} />
-              <YAxis stroke="#71717a" fontSize={11} unit="억" />
+              <YAxis stroke="#71717a" fontSize={11} unit="억엔" />
               <Tooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
@@ -114,11 +117,11 @@ export default function ForecastChart() {
                           {data.age}세 ({data.year}년)
                         </div>
                         <div className="text-emerald-400 font-extrabold font-mono text-sm">
-                          예상 자산: {formatCurrency(data.netWorth)}
+                          예상 자산: {formatVal(data.netWorth)}
                         </div>
                         {data.eventTitle && (
                           <div className="text-amber-400 pt-1 border-t border-zinc-800 font-medium">
-                            🎯 미션 지출: {data.eventTitle} ({formatCurrency(data.eventAmount || 0)})
+                            🎯 미션 지출: {data.eventTitle} ({formatVal(data.eventAmount || 0)})
                           </div>
                         )}
                       </div>
@@ -143,9 +146,9 @@ export default function ForecastChart() {
         <div className="flex items-center justify-between text-xs text-zinc-400 border-t border-zinc-800/60 pt-3">
           <span className="flex items-center gap-1.5">
             <Info className="w-4 h-4 text-cyan-400" />
-            실질 수익률: <strong className="text-zinc-200">{(expectedYield - inflationRate).toFixed(1)}%</strong> (기대수익률 {expectedYield}% - 물가상승률 {inflationRate}%)
+            실질 연간 성과: <strong className="text-zinc-200">{(expectedYield - inflationRate).toFixed(1)}%</strong> (기대수익률 {expectedYield}% - 물가상승률 {inflationRate}%)
           </span>
-          <span className="text-zinc-500 font-mono">50년 몬테카를로 기초 연산</span>
+          <span className="text-zinc-500 font-mono">50년 몬테카를로 복리 시뮬레이션</span>
         </div>
       </div>
     </section>

@@ -5,13 +5,17 @@ import { useHistoryStore } from '@/store/useHistoryStore';
 import { useAssetStore } from '@/store/useAssetStore';
 import { useCashflowStore } from '@/store/useCashflowStore';
 import { useTimelineStore } from '@/store/useTimelineStore';
-import { History, Download, Upload, Trash2, Clock, CheckCircle, Activity } from 'lucide-react';
+import { useHydrated } from '@/hooks/useHydrated';
+import Tooltip from '@/components/common/Tooltip';
+import { History, Download, Upload, Trash2, Clock, Activity } from 'lucide-react';
 
 export default function HistorySection() {
+  const isHydrated = useHydrated();
   const { logs, clearHistory } = useHistoryStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formatTimestamp = (iso: string) => {
+    if (!isHydrated) return iso.slice(0, 10);
     try {
       const date = new Date(iso);
       return date.toLocaleString('ko-KR', {
@@ -29,7 +33,7 @@ export default function HistorySection() {
   // Export JSON Backup
   const handleExportData = () => {
     const backupData = {
-      version: '1.0.0',
+      version: '1.1.0',
       exportedAt: new Date().toISOString(),
       assets: useAssetStore.getState().assets,
       cashflow: useCashflowStore.getState().items,
@@ -88,6 +92,8 @@ export default function HistorySection() {
     }
   };
 
+  const displayLogs = isHydrated ? logs : [];
+
   return (
     <section className="space-y-6 pt-4">
       {/* Section Header */}
@@ -96,6 +102,7 @@ export default function HistorySection() {
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <History className="w-5 h-5 text-indigo-400" />
             자산 변동 누적 히스토리 & 데이터 관리
+            <Tooltip content="자산 및 현금흐름의 변경 활동이 시간에 따라 자동 누적 기록되며, 현재 전체 재정 상태를 JSON 백업 파일로 내보내거나 복원할 수 있습니다." />
           </h2>
           <p className="text-xs text-zinc-400 mt-0.5">
             자산/현금흐름 변경 이력이 자동으로 기록되며, 로컬 저장 및 백업이 지원됩니다.
@@ -134,10 +141,10 @@ export default function HistorySection() {
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold text-zinc-400 flex items-center gap-1.5">
             <Activity className="w-4 h-4 text-emerald-400" />
-            누적 활동 기록 ({logs.length}건)
+            누적 활동 기록 ({displayLogs.length}건)
           </span>
 
-          {logs.length > 0 && (
+          {displayLogs.length > 0 && (
             <button
               onClick={clearHistory}
               className="text-xs text-zinc-400 hover:text-rose-400 transition flex items-center gap-1"
@@ -147,13 +154,13 @@ export default function HistorySection() {
           )}
         </div>
 
-        {logs.length === 0 ? (
+        {displayLogs.length === 0 ? (
           <div className="text-center py-8 text-zinc-400 text-sm">
             아직 기록된 자산 변동 히스토리가 없습니다.
           </div>
         ) : (
           <div className="space-y-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
-            {logs.map((log) => (
+            {displayLogs.map((log) => (
               <div
                 key={log.id}
                 className="bg-zinc-950/80 border border-zinc-800/80 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
@@ -163,7 +170,7 @@ export default function HistorySection() {
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${getActionBadge(log.action)}`}>
                       {log.action}
                     </span>
-                    <span className="text-xs font-mono text-zinc-400 text-zinc-400 flex items-center gap-1">
+                    <span className="text-xs font-mono text-zinc-400 flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {formatTimestamp(log.timestamp)}
                     </span>

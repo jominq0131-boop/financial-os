@@ -37,53 +37,53 @@ interface AssetStore {
 const INITIAL_ASSETS: Asset[] = [
   {
     id: '1',
-    name: '비상금 / 고금리 보통예금',
+    name: '비상금 예금 (일본 고금리 인터넷은행)',
     category: 'CASH',
     tier: 'TIER_1_SAFETY',
-    amount: 3000000,        // 300엔
+    amount: 3000000,        // 300만 엔
     expectedYield: 0.2,
     currency: 'JPY',
-    notes: '일본 인터넷은행(SBI/라쿠텐) 고금리 계좌',
+    notes: 'SBI / 라쿠텐 인터넷은행 고금리 우대 계좌',
     updatedAt: new Date().toISOString(),
   },
   {
     id: '2',
-    name: '신NISA 성장투자枠 (올컨 / S&P500)',
+    name: '신NISA 성장투자형 (올컨트리 / S&P500)',
     category: 'NISA',
     tier: 'TIER_2_GROWTH',
-    amount: 2950000,        // 295엔
+    amount: 2950000,        // 295만 엔
     expectedYield: 7.0,
     currency: 'JPY',
-    notes: '신NISA 성장투자枠 (연간 한도 360만엔 중 295만엔 적립)',
+    notes: '신NISA 성장투자형 (연간 한도 360만 엔 중 295만 엔 불입)',
     updatedAt: new Date().toISOString(),
   },
   {
     id: '3',
-    name: '특정계좌 미국 ETF (VTI / SCHD)',
+    name: '특정계좌 미국주식 ETF (VTI / SCHD)',
     category: 'STOCK',
     tier: 'TIER_2_GROWTH',
-    amount: 6500000,        // 650엔
+    amount: 6500000,        // 650만 엔
     expectedYield: 6.5,
     currency: 'JPY',
     updatedAt: new Date().toISOString(),
   },
   {
     id: '4',
-    name: 'iDeCo (개인형 확정출여 연금)',
+    name: 'iDeCo 개인형 퇴직연금 (인덱스 펀드)',
     category: 'IDECO',
     tier: 'TIER_2_GROWTH',
-    amount: 1800000,        // 180엔
+    amount: 1800000,        // 180만 엔
     expectedYield: 5.5,
     currency: 'JPY',
-    notes: '60세까지 인출 불가 (절세 혜택)',
+    notes: '60세까지 인출 불가 (전액 소득공제 혜택)',
     updatedAt: new Date().toISOString(),
   },
   {
     id: '5',
-    name: '보증금 / 임대주택 보증금',
+    name: '임대주택 보증금 (시쿠킨/보증금)',
     category: 'REAL_ESTATE',
     tier: 'TIER_1_SAFETY',
-    amount: 600000,         // 60엔
+    amount: 600000,         // 60만 엔
     expectedYield: 0.0,
     currency: 'JPY',
     updatedAt: new Date().toISOString(),
@@ -114,7 +114,7 @@ export const useAssetStore = create<AssetStore>()(
           type: 'ASSET',
           action: 'ADD',
           title: `신규 자산 추가: ${asset.name}`,
-          detail: `금액: ￥${asset.amount.toLocaleString()} | 카테고리: ${asset.category}`,
+          detail: `금액: ￥${asset.amount.toLocaleString()} (엔) | 카테고리: ${asset.category}`,
         });
       },
 
@@ -126,7 +126,7 @@ export const useAssetStore = create<AssetStore>()(
             type: 'ASSET',
             action: 'DELETE',
             title: `자산 삭제: ${target.name}`,
-            detail: `삭제된 자산 평가금: ￥${target.amount.toLocaleString()}`,
+            detail: `삭제된 자산 평가금: ￥${target.amount.toLocaleString()} (엔)`,
           });
         }
       },
@@ -144,7 +144,7 @@ export const useAssetStore = create<AssetStore>()(
             action: 'UPDATE',
             title: `자산 수정: ${updated.name || target.name}`,
             detail: updated.amount !== undefined 
-              ? `금액 변경: ￥${target.amount.toLocaleString()} ➔ ￥${updated.amount.toLocaleString()}`
+              ? `금액 변경: ￥${target.amount.toLocaleString()} ➔ ￥${updated.amount.toLocaleString()} (엔)`
               : `자산 정보 업데이트`,
           });
         }

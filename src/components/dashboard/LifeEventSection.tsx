@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { useTimelineStore } from '@/store/useTimelineStore';
 import { useAssetStore } from '@/store/useAssetStore';
 import { EVENT_CATEGORY_LABELS } from '@/types/timeline';
+import { formatJPY } from '@/utils/currency';
+import Tooltip from '@/components/common/Tooltip';
 import { Calendar, Plus, Trash2, Milestone } from 'lucide-react';
 import AddEventModal from './AddEventModal';
 
@@ -16,9 +18,9 @@ export default function LifeEventSection() {
   const totalRequired = getTotalRequiredTarget();
   const totalNetWorth = getTotalNetWorth();
 
-  const formatCurrency = (val: number) => {
-    if (isPrivate) return '••••••••';
-    return `₩ ${val.toLocaleString()}`;
+  const formatVal = (val: number) => {
+    if (isPrivate) return '￥ ••••••••';
+    return formatJPY(val);
   };
 
   return (
@@ -29,9 +31,10 @@ export default function LifeEventSection() {
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <Milestone className="w-5 h-5 text-amber-400" />
             생애 주기 이정표 타임라인 (Life Financial Timeline)
+            <Tooltip content="내 연령별 핵심 인생 이벤트(주택 구매, 안식년, 은퇴 등)와 필요 엔화(JPY ￥) 자금 목표를 관리합니다." />
           </h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            내 삶의 핵심 미션 연령대별 필요 자금 목표 (현재 연령: 만 {currentAge}세)
+            내 삶의 핵심 미션 연령대별 필요 자금 목표 (현재 연령: 만 {currentAge}세 / 엔화 ￥ 기준)
           </p>
         </div>
 
@@ -95,7 +98,7 @@ export default function LifeEventSection() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-zinc-800/50 text-xs">
                     <p className="text-zinc-400">{evt.description || '인생 목표 미션 이벤트'}</p>
                     <div className="text-base font-extrabold text-amber-400 font-mono">
-                      {formatCurrency(evt.requiredAmount)}
+                      {formatVal(evt.requiredAmount)}
                     </div>
                   </div>
                 </div>
@@ -111,7 +114,7 @@ export default function LifeEventSection() {
           <Calendar className="w-4 h-4 text-cyan-400" /> 총 등록된 생애 미션 필요 자금 합계
         </span>
         <span className="text-sm font-bold text-white font-mono">
-          {formatCurrency(totalRequired)}
+          {formatVal(totalRequired)}
         </span>
       </div>
 

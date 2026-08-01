@@ -3,6 +3,8 @@
 import React from 'react';
 import { useAssetStore } from '@/store/useAssetStore';
 import { TIER_LABELS, BucketTier } from '@/types/asset';
+import { formatJPY } from '@/utils/currency';
+import Tooltip from '@/components/common/Tooltip';
 import { Layers, RefreshCw, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function BucketSection() {
@@ -11,9 +13,9 @@ export default function BucketSection() {
   const allocations = getTierAllocation();
   const totalNetWorth = getTotalNetWorth();
 
-  const formatCurrency = (val: number) => {
-    if (isPrivate) return '••••••••';
-    return `₩ ${val.toLocaleString()}`;
+  const formatVal = (val: number) => {
+    if (isPrivate) return '￥ ••••••••';
+    return formatJPY(val);
   };
 
   const getTierColor = (tier: string) => {
@@ -37,9 +39,10 @@ export default function BucketSection() {
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <Layers className="w-5 h-5 text-cyan-400" />
             3-Tier 자본 배치 버킷 (Capital Allocation Buckets)
+            <Tooltip content="자산을 안전망(Tier 1), 장기성장(Tier 2), 목표미션(Tier 3) 3단계 버킷으로 분류하여 최적의 리밸런싱 비율을 유지하는 전략 관리 도구입니다." />
           </h2>
           <p className="text-xs text-zinc-400 mt-0.5">
-            안전망(Safety), 성장(Growth), 미션/꿈(Mission) 자본의 목표 비중 및 리밸런싱 가이드
+            안전망(Safety), 성장(Growth), 미션/꿈(Mission) 자본의 목표 비중 및 리밸런싱 가이드 (엔화 ￥ 기준)
           </p>
         </div>
       </div>
@@ -50,6 +53,7 @@ export default function BucketSection() {
           const style = getTierColor(item.tier);
           const diffRatio = Number((item.currentRatio - item.targetRatio).toFixed(1));
           const diffAmount = Math.round(totalNetWorth * (Math.abs(diffRatio) / 100));
+          const tierInfo = TIER_LABELS[item.tier as BucketTier];
 
           return (
             <div
@@ -58,8 +62,9 @@ export default function BucketSection() {
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
-                    {TIER_LABELS[item.tier as BucketTier]}
+                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center">
+                    {tierInfo.label}
+                    <Tooltip content={tierInfo.description} />
                   </span>
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${style.text} bg-zinc-800 border border-zinc-700/60`}>
                     {item.currentRatio}%
@@ -67,7 +72,7 @@ export default function BucketSection() {
                 </div>
 
                 <div className="text-2xl font-extrabold text-white font-mono tracking-tight mb-2">
-                  {formatCurrency(item.currentAmount)}
+                  {formatVal(item.currentAmount)}
                 </div>
 
                 {/* Progress Bar */}
@@ -93,7 +98,7 @@ export default function BucketSection() {
                 </div>
                 <input
                   id={`slider-${item.tier}`}
-                  aria-label={`${TIER_LABELS[item.tier as BucketTier]} 목표 비중 조율`}
+                  aria-label={`${tierInfo.label} 목표 비중 조율`}
                   type="range"
                   min="0"
                   max="100"
@@ -111,11 +116,11 @@ export default function BucketSection() {
                     </span>
                   ) : diffRatio < 0 ? (
                     <span className="flex items-center gap-1 text-amber-400 font-medium">
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" /> {formatCurrency(diffAmount)} 매수/추가 추천 ({Math.abs(diffRatio)}% 부족)
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" /> {formatVal(diffAmount)} 추가 매수 추천 ({Math.abs(diffRatio)}% 부족)
                     </span>
                   ) : (
                     <span className="flex items-center gap-1 text-cyan-400 font-medium">
-                      <AlertCircle className="w-3.5 h-3.5" /> 목표 대비 {diffRatio}% 초과 (리밸런싱 매도 고려)
+                      <AlertCircle className="w-3.5 h-3.5" /> 목표 대비 {diffRatio}% 초과 (리밸런싱 고려)
                     </span>
                   )}
                 </div>
