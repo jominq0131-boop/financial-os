@@ -12,7 +12,7 @@ import { Compass, Sparkles, TrendingUp, ShieldAlert, CheckCircle2, ArrowRight, Z
 export default function FireAdvisorCard() {
   const isHydrated = useHydrated();
   const { getTotalNetWorth, getNisaTotal, assets, isPrivate } = useAssetStore();
-  const { getTotalIncome, getTotalExpense, getTotalSavings, getTotalInvestments, getTotalCapitalInflow } = useCashflowStore();
+  const { items, getTotalIncome, getTotalExpense, getTotalSavings, getTotalInvestments, getTotalCapitalInflow } = useCashflowStore();
   const { fireTarget, nisaAnnualLimit } = useSettingsStore();
 
   const totalNetWorth = getTotalNetWorth();
@@ -23,8 +23,16 @@ export default function FireAdvisorCard() {
   const capitalInflow = getTotalCapitalInflow();
   const nisaTotal = getNisaTotal();
 
-  // 1. 소비 율 & 저축/투자율 (소비지출 / 수입)
-  const expenseRate = totalIncome > 0 ? (totalExpense / totalIncome) * 100 : 0;
+  // 현금흐름 항목 중 '주거' 카테고리 지출과 순수 변동 지출 분리
+  const housingExpense = items
+    .filter((i) => (i.type === 'EXPENSE_FIXED' || i.type === 'EXPENSE_VARIABLE') && i.category === '주거')
+    .reduce((sum, i) => sum + i.amount, 0);
+
+  const variableExpense = Math.max(0, totalExpense - housingExpense);
+
+  // 1. 소비 율 연산
+  const totalExpenseRate = totalIncome > 0 ? (totalExpense / totalIncome) * 100 : 0;
+  const variableExpenseRate = totalIncome > 0 ? (variableExpense / totalIncome) * 100 : 0;
   const capitalRate = totalIncome > 0 ? (capitalInflow / totalIncome) * 100 : 0;
 
   // 2. 자산 중 현금 비중
@@ -32,19 +40,19 @@ export default function FireAdvisorCard() {
   const cashRatio = totalNetWorth > 0 ? (cashAmount / totalNetWorth) * 100 : 0;
 
   // 3. 진단 점수 (100점 만점)
-  // - 자본 유입율 (최대 50점): 저축/투자율 50% 이상 시 50점
-  // - 현금 비중 건전성 (최대 25점): 현금 비중 20~40%일 때 25점
+  // - 자본 유입율 (최대 50점): 저축/투자율 35% 이상 시 50점 만점 (현실적인 통과 기준)
+  // - 현금 비중 건전성 (최대 25점): 현금 비중 15~50%일 때 25점
   // - NISA 한도 활용도 (최대 25점): NISA 100만엔 이상 25점
-  const capitalScore = Math.min(50, Math.round((capitalRate / 50) * 50));
-  const cashScore = cashRatio >= 15 && cashRatio <= 45 ? 25 : cashRatio > 45 ? 15 : 10;
+  const capitalScore = Math.min(50, Math.round((capitalRate / 35) * 50));
+  const cashScore = cashRatio >= 15 && cashRatio <= 50 ? 25 : cashRatio > 50 ? 18 : 12;
   const nisaScore = Math.min(25, Math.round((nisaTotal / 1000000) * 25));
   const totalHealthScore = Math.min(100, capitalScore + cashScore + nisaScore);
 
   // 4. 상태 판정
   const getGrade = (score: number) => {
-    if (score >= 85) return { grade: 'S등급', color: 'text-amber-400', label: '🔥 FIRE 최적화 모범 상태' };
-    if (score >= 70) return { grade: 'A등급', color: 'text-emerald-400', label: '✅ 안정적인 자산 증식 궤도' };
-    if (score >= 55) return { grade: 'B등급', color: 'text-cyan-400', label: '☘️ 양호 (소비·투자 비율 조절 권장)' };
+    if (score >= 80) return { grade: 'S등급', color: 'text-amber-400', label: '🔥 FIRE 최적화 모범 상태' };
+    if (score >= 65) return { grade: 'A등급', color: 'text-emerald-400', label: '✅ 안정적인 자산 증식 궤도' };
+    if (score >= 50) return { grade: 'B등급', color: 'text-cyan-400', label: '☘️ 양호 (소비·투자 비율 조절 권장)' };
     return { grade: 'C등급', color: 'text-rose-400', label: '⚠️ 재정 체질 개선 필요' };
   };
 
@@ -96,22 +104,27 @@ export default function FireAdvisorCard() {
 
       {/* 3대 핵심 체질 진단 지표 */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* 소비 비중 진단 */}
+        {/* 순수 변동 소비 지출율 진단 (주거비 제외) */}
         <div className="bg-zinc-950/60 border border-zinc-800/80 rounded-2xl p-4 space-y-1.5">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-zinc-400">월 소비 지출율</span>
-            <span className={`font-mono font-bold ${expenseRate <= 40 ? 'text-emerald-400' : 'text-rose-400'}`}>
-              {isHydrated ? expenseRate.toFixed(1) : 0}%
+            <span className="text-zinc-400 flex items-center gap-1">
+              순수 변동소비율
+              <Tooltip content="불가피한 고정 주거비(월세/공과금)를 제외하고 통제 가능한 순수 생활비(식비·여가·교통 등)의 수입 대비 비율입니다." />
+            </span>
+            <span className={`font-mono font-bold ${variableExpenseRate <= 30 ? 'text-emerald-400' : 'text-amber-400'}`}>
+              {isHydrated ? variableExpenseRate.toFixed(1) : 0}%
             </span>
           </div>
           <div className="w-full bg-zinc-900 h-2 rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${expenseRate <= 40 ? 'bg-emerald-400' : 'bg-rose-500'}`}
-              style={{ width: `${Math.min(100, expenseRate)}%` }}
+              className={`h-full rounded-full transition-all duration-500 ${variableExpenseRate <= 30 ? 'bg-emerald-400' : 'bg-amber-400'}`}
+              style={{ width: `${Math.min(100, variableExpenseRate)}%` }}
             />
           </div>
           <p className="text-[11px] text-zinc-400 pt-0.5">
-            {expenseRate <= 40 ? '✅ 수입 대비 소비가 통제되고 있습니다.' : '⚠️ 소비 지출 비중 감축을 추천합니다.'}
+            {variableExpenseRate <= 30
+              ? '✅ 고정 주거비 제외 생활비가 잘 통제됨'
+              : '💡 식비·여가 등 변동 소비 조절 권장'}
           </p>
         </div>
 
