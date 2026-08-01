@@ -54,15 +54,12 @@
 - [x] **#23** Next.js static export (`output: 'export'`) & `.github/workflows/deploy.yml` 자동 배포 연동
 - [x] **#24** 브라우저 전용 `localStorage` 개인 재정 정보 보안 호환성 검증
 
-### Phase 8-1: 월별 지출 온도계 & FIRE 루틴 체크리스트 & 전체 데이터 백업 (완료 — 2026-08-01)
-- [x] **#28** 월별 지출 온도계 (`SpendingTemperatureCard.tsx`) — 카테고리별 증감 비교 & 온도계 시각화
-- [x] **#29** FIRE 습관 루틴 체크리스트 (`FireRoutineCard.tsx`) — 월간 7대 재정 루틴, XP 게이지, 완주 폭죽 팡파르
-- [x] **#29-2** 전스토어 JSON 통합 백업/복원 — 스냅샷, 월별 지출, FIRE 루틴, 사용자 설정 포함 PC↔모바일 100% 동기화
+### Phase 8-2: 주식/ETF 보유 종목 수익률 기록기 (완료 — 2026-08-01)
+- [x] **#30** 주식/ETF 보유 종목 수익률 기록기 (`StockPortfolioSection.tsx`) — 티커, 수량, 평균 매입가, 현재가(수기), 통화(JPY/USD) 및 환율 적용 평가손익(%) 자산 탭 연동 및 `useHoldingStore` 탑재
 
 ---
 
 ## 🌟 Next Recommended Tasks (다음 추천 작업 후보)
 
-- [ ] **#30** 주식/ETF 보유 종목 수익률 기록기 (`src/components/assets/`)
-- [ ] **#31** 연간 세금/공제 캘린더 (일본 확정신고 3월, 주민세 6월 등 세무 일정 알림)
-- [ ] **#32** 재정 일지 (Financial Journal - 매월 투자 사유 및 회고 메모)
+- [ ] **#31** 연간 세금/공제 캘린더 (일본 확정신고 3월, 주민세 6월 등 세무 일정 알림 - iDeCo 제외)
+- [ ] **#32** 재정 일지 (Financial Journal - 매월 투자 사유, 감정 상태, 특이사항 메모 기능)

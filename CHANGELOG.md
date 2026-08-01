@@ -2,6 +2,18 @@
 
 ---
 
+## [2.0.0] - 2026-08-01
+
+### Added — #30 주식/ETF 보유 종목 수익률 기록기 (StockPortfolioSection)
+- **신규 스토어 `useHoldingStore.ts`**: 종목별 티커, 계좌 유형(신NISA 성장/적립, 특정계좌, iDeCo 등), 수량, 평균 매입가, 현재가(수기), 통화(JPY/USD) 및 환율 저장
+- **신규 컴포넌트 `StockPortfolioSection.tsx`**: 자산 탭(Assets)에 전면 배치
+  - 총 매입금액, 현재 평가금액, 총 평가손익(엔화 ￥ 및 수익률 %) KPI 카드 3종 시각화
+  - USD/JPY 환율 선택적 적용(달러 종목 환산) 및 계좌 유형 배지 시각화
+  - 신규 종목 추가 모달(`AddHoldingModal.tsx`) 및 종목 정보 수정 모달(`EditHoldingModal.tsx`)
+- **버그 수정**: `FireRoutineCard.tsx` 월별 이동 시 타임존(UTC vs KST) 이슈로 2개월 뛰는 버그 및 2026년 이후 이동 불가 현상 완벽 해결
+
+---
+
 ## [1.9.1] - 2026-08-01
 
 ### Added — #29 FIRE 습관 루틴 체크리스트 (FireRoutineCard)

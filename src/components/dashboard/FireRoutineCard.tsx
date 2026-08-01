@@ -15,13 +15,16 @@ export default function FireRoutineCard() {
   const prevCompletedCountRef = useRef(0);
 
   // Month navigation
-  const todayMonth = new Date().toISOString().slice(0, 7);
+  const today = new Date();
+  const todayMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
   const [selectedMonth, setSelectedMonth] = useState(todayMonth);
 
   const navigateMonth = (dir: -1 | 1) => {
     const [y, m] = selectedMonth.split('-').map(Number);
     const d = new Date(y, m - 1 + dir, 1);
-    setSelectedMonth(d.toISOString().slice(0, 7));
+    const nextYear = d.getFullYear();
+    const nextMonth = String(d.getMonth() + 1).padStart(2, '0');
+    setSelectedMonth(`${nextYear}-${nextMonth}`);
   };
 
   const record = getRecord(selectedMonth);
