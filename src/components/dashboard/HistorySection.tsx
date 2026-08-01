@@ -37,7 +37,7 @@ export default function HistorySection() {
   // Export JSON Backup (Full All Stores Backup)
   const handleExportData = () => {
     const backupData = {
-      version: '1.2.0',
+      version: '2.1.0',
       exportedAt: new Date().toISOString(),
       assets: useAssetStore.getState().assets,
       cashflow: useCashflowStore.getState().items,
@@ -59,7 +59,7 @@ export default function HistorySection() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `financial-os-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `financial-os-backup-v2.1-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -87,11 +87,11 @@ export default function HistorySection() {
         useHistoryStore.getState().addLog({
           type: 'SYSTEM',
           action: 'ADD',
-          title: '전체 데이터 백업 복원 완료',
-          detail: '스냅샷, 지출 기록, FIRE 루틴을 포함한 전체 데이터가 정상 복원되었습니다.',
+          title: '전체 데이터 백업 복원 완료 (v2.1.0)',
+          detail: '4축 현금흐름, 자산, 스냅샷, 세제 설정이 포함된 전체 데이터가 정상 복원되었습니다.',
         });
 
-        alert('모든 백업 데이터(스냅샷, 지출기록, 루틴 포함) 복원이 완료되었습니다.');
+        alert('모든 백업 데이터(4축 현금흐름, 자산, 스냅샷, 설정 포함) 복원이 성공적으로 완수되었습니다.');
       } catch (err) {
         alert('올바른 백업 JSON 파일 형식이 아닙니다.');
       }
