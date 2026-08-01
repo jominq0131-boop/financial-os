@@ -14,6 +14,7 @@ interface SnapshotState {
   snapshots: NetWorthSnapshot[];
   addSnapshot: (snapshot: Omit<NetWorthSnapshot, 'id'>) => void;
   deleteSnapshot: (id: string) => void;
+  updateSnapshot: (id: string, updatedFields: Partial<NetWorthSnapshot>) => void;
   resetSnapshots: () => void;
 }
 
@@ -63,6 +64,13 @@ export const useSnapshotStore = create<SnapshotState>()(
         set((state) => ({
           snapshots: state.snapshots.filter((s) => s.id !== id),
         })),
+      updateSnapshot: (id, updatedFields) =>
+        set((state) => {
+          const updated = state.snapshots.map((s) =>
+            s.id === id ? { ...s, ...updatedFields } : s
+          );
+          return { snapshots: updated.sort((a, b) => a.date.localeCompare(b.date)) };
+        }),
       resetSnapshots: () => set({ snapshots: DEFAULT_SNAPSHOTS }),
     }),
     {

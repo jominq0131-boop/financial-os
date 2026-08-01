@@ -16,15 +16,19 @@ import {
   Tooltip as RechartsTooltip,
   CartesianGrid,
 } from 'recharts';
-import { Camera, TrendingUp, TrendingDown, Trash2, Calendar } from 'lucide-react';
+import { Camera, TrendingUp, TrendingDown, Trash2, Calendar, Edit3 } from 'lucide-react';
+import EditSnapshotModal from './EditSnapshotModal';
 
 export default function SnapshotGrowthChart() {
   const isHydrated = useHydrated();
   const { snapshots, addSnapshot, deleteSnapshot } = useSnapshotStore();
   const { getTotalNetWorth, assets, isPrivate } = useAssetStore();
 
+  const todayDate = new Date().toISOString().slice(0, 7);
+  const [selectedMonth, setSelectedMonth] = useState(todayDate);
   const [noteInput, setNoteInput] = useState('');
   const [showNoteInput, setShowNoteInput] = useState(false);
+  const [editingSnapshot, setEditingSnapshot] = useState<NetWorthSnapshot | null>(null);
 
   const currentNetWorth = getTotalNetWorth();
   const cashTotal = assets
@@ -33,11 +37,9 @@ export default function SnapshotGrowthChart() {
   const investmentTotal = currentNetWorth - cashTotal;
 
   // 오늘 날짜 YYYY-MM
-  const todayDate = new Date().toISOString().slice(0, 7);
-
   const handleCaptureSnapshot = () => {
     addSnapshot({
-      date: todayDate,
+      date: selectedMonth || todayDate,
       netWorth: currentNetWorth,
       totalCash: cashTotal,
       totalInvestments: investmentTotal,
@@ -97,13 +99,19 @@ export default function SnapshotGrowthChart() {
               <Camera className="w-3.5 h-3.5" /> 스냅샷 기록
             </button>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-zinc-950 border border-zinc-800 p-2 rounded-2xl">
+              <input
+                type="month"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="bg-zinc-900 border border-zinc-700 rounded-xl px-2 py-1 text-xs text-white font-mono focus:outline-none focus:border-emerald-500"
+              />
               <input
                 type="text"
                 value={noteInput}
                 onChange={(e) => setNoteInput(e.target.value)}
-                placeholder="메모 (예: 8월 월급 적립)"
-                className="bg-zinc-800 border border-zinc-700 rounded-xl px-2.5 py-1 text-xs text-white focus:outline-none focus:border-emerald-500 w-40"
+                placeholder="메모 (예: 7월 보너스 적립)"
+                className="bg-zinc-900 border border-zinc-700 rounded-xl px-2.5 py-1 text-xs text-white focus:outline-none focus:border-emerald-500 w-36"
               />
               <button
                 onClick={handleCaptureSnapshot}
@@ -209,7 +217,7 @@ export default function SnapshotGrowthChart() {
           {snapshots.map((s) => (
             <div
               key={s.id}
-              className="flex items-center justify-between bg-zinc-800/40 border border-zinc-800/80 rounded-xl px-3.5 py-2 text-xs"
+              className="flex items-center justify-between bg-zinc-800/40 border border-zinc-800/80 rounded-xl px-3.5 py-2 text-xs group"
             >
               <div className="flex items-center gap-3">
                 <span className="font-mono text-zinc-300 font-semibold flex items-center gap-1">
@@ -220,17 +228,33 @@ export default function SnapshotGrowthChart() {
                 </span>
                 {s.note && <span className="text-zinc-400 text-[11px]">({s.note})</span>}
               </div>
-              <button
-                onClick={() => deleteSnapshot(s.id)}
-                className="text-zinc-400 hover:text-rose-400 transition"
-                title="스냅샷 삭제"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
+              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                <button
+                  onClick={() => setEditingSnapshot(s)}
+                  className="text-zinc-400 hover:text-emerald-400 p-1"
+                  title="스냅샷 수정"
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => deleteSnapshot(s.id)}
+                  className="text-zinc-500 hover:text-rose-400 p-1"
+                  title="스냅샷 삭제"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Edit Snapshot Modal */}
+      <EditSnapshotModal
+        isOpen={Boolean(editingSnapshot)}
+        onClose={() => setEditingSnapshot(null)}
+        snapshot={editingSnapshot}
+      />
     </div>
   );
 }

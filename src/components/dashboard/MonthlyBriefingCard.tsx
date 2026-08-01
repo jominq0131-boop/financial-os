@@ -26,6 +26,9 @@ export default function MonthlyBriefingCard() {
   const { snapshots, addSnapshot } = useSnapshotStore();
   const { addLog } = useHistoryStore();
 
+  const todayDate = new Date().toISOString().slice(0, 7);
+  const [selectedMonth, setSelectedMonth] = useState(todayDate);
+  const [showMonthForm, setShowMonthForm] = useState(false);
   const [isCapturedToday, setIsCapturedToday] = useState(false);
 
   const currentNetWorth = getTotalNetWorth();
@@ -40,7 +43,6 @@ export default function MonthlyBriefingCard() {
   const surplusRate = totalIncome > 0 ? Number(((netSurplus / totalIncome) * 100).toFixed(1)) : 0;
 
   // 전월 스냅샷 비교 (스냅샷 이력 중 가장 최근 정산 내역)
-  const todayDate = new Date().toISOString().slice(0, 7);
   const lastMonthSnapshot = snapshots.length > 0 ? snapshots[snapshots.length - 1] : null;
 
   const momGrowth = lastMonthSnapshot ? currentNetWorth - lastMonthSnapshot.netWorth : 0;
@@ -51,24 +53,26 @@ export default function MonthlyBriefingCard() {
 
   const isSurplus = momGrowth >= 0;
 
-  // 원터치 월말 정산 마감 실행
+  // 원터치 월말 정산 마감 실행 (지정 정산년월로 저장)
   const handleMonthlyClosing = () => {
+    const targetMonth = selectedMonth || todayDate;
     addSnapshot({
-      date: todayDate,
+      date: targetMonth,
       netWorth: currentNetWorth,
       totalCash,
       totalInvestments,
-      note: `${todayDate} 정기 월말 정산 마감`,
+      note: `${targetMonth} 정기 재정 정산 마감`,
     });
 
     addLog({
       type: 'ASSET',
       action: 'ADD',
-      title: `📸 ${todayDate} 월말 재정 정산 마감`,
+      title: `📸 ${targetMonth} 재정 정산 마감`,
       detail: `최종 순자산: ￥${currentNetWorth.toLocaleString()} (전월 대비 ${momGrowth >= 0 ? '+' : ''}￥${momGrowth.toLocaleString()})`,
     });
 
     setIsCapturedToday(true);
+    setShowMonthForm(false);
     setTimeout(() => setIsCapturedToday(false), 3000);
   };
 
@@ -101,28 +105,54 @@ export default function MonthlyBriefingCard() {
           </h2>
         </div>
 
-        {/* Closing Action Button */}
-        <button
-          onClick={handleMonthlyClosing}
-          disabled={isCapturedToday}
-          className={`px-4 py-2.5 rounded-2xl font-semibold text-xs transition flex items-center justify-center gap-2 shadow-lg ${
-            isCapturedToday
-              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-              : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/30'
-          }`}
-        >
-          {isCapturedToday ? (
-            <>
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>정산 마감 완료! 📸</span>
-            </>
+        {/* Closing Action Button Area */}
+        <div className="flex items-center gap-2">
+          {!showMonthForm ? (
+            <button
+              onClick={() => setShowMonthForm(true)}
+              disabled={isCapturedToday}
+              className={`px-4 py-2.5 rounded-2xl font-semibold text-xs transition flex items-center justify-center gap-2 shadow-lg ${
+                isCapturedToday
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                  : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/30'
+              }`}
+            >
+              {isCapturedToday ? (
+                <>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>정산 마감 완료! 📸</span>
+                </>
+              ) : (
+                <>
+                  <Camera className="w-4 h-4" />
+                  <span>재정 마감 & 스냅샷 기록</span>
+                </>
+              )}
+            </button>
           ) : (
-            <>
-              <Camera className="w-4 h-4" />
-              <span>이번 달 재정 마감 & 스냅샷 기록</span>
-            </>
+            <div className="flex items-center gap-2 bg-zinc-950 border border-zinc-800 p-2 rounded-2xl">
+              <span className="text-xs text-zinc-400 font-mono">정산년월:</span>
+              <input
+                type="month"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="bg-zinc-900 border border-zinc-700 rounded-xl px-2.5 py-1 text-xs text-white font-mono focus:outline-none focus:border-emerald-500"
+              />
+              <button
+                onClick={handleMonthlyClosing}
+                className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded-xl font-medium"
+              >
+                저장
+              </button>
+              <button
+                onClick={() => setShowMonthForm(false)}
+                className="px-2 py-1 text-zinc-400 hover:text-white text-xs"
+              >
+                취소
+              </button>
+            </div>
           )}
-        </button>
+        </div>
       </div>
 
       {/* Main KPI Grid */}
